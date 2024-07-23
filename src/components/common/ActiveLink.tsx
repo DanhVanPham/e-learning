@@ -14,10 +14,10 @@ const ActiveLink = ({ url, children }: TActiveLink) => {
     <Link
       href={url}
       className={clsx(
-        'p-3 rounded-md flex items-center gap-3  transition-all',
+        'p-3 rounded-md flex items-center gap-3  transition-all dark:text-grayDark',
         isActive
-          ? 'text-white bg-primary svg-animate'
-          : 'hover:text-primary hover:bg-primary hover:bg-opacity-10 ',
+          ? '!text-white bg-primary svg-animate'
+          : 'hover:!text-primary hover:!bg-primary hover:!bg-opacity-10 ',
       )}
     >
       {children}
