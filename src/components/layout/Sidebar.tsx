@@ -2,7 +2,9 @@ import React from 'react'
 import { menuItems } from '@/constants'
 import { ActiveLink, ModeToggle } from '../common'
 import type { TMenuItem } from '@/types/index.t'
-import { UserButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut, UserButton, useAuth } from '@clerk/nextjs'
+import Link from 'next/link'
+import { IconUsers } from '../icons'
 
 const Sidebar = () => {
   return (
@@ -21,9 +23,19 @@ const Sidebar = () => {
           />
         ))}
       </ul>
-      <div className="mt-auto flex items-center justify-end gap-5">
+      <div className="mt-auto flex items-center justify-end gap-3">
         <ModeToggle />
-        <UserButton />
+        <SignedOut>
+          <Link
+            href="/sign-in"
+            className="size-10 bg-primary text-white flex items-center justify-center p-1 rounded-lg"
+          >
+            <IconUsers />
+          </Link>
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </div>
     </aside>
   )
