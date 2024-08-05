@@ -4,6 +4,8 @@ import { manrope } from '@/utils'
 import Sidebar from '@/components/layout/Sidebar'
 import { ClerkProvider } from '@clerk/nextjs'
 import { ThemeProvider } from '@/components/common'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
   title: 'E-Learning',
@@ -26,6 +28,11 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <ToastContainer 
+              autoClose={2000}
+              hideProgressBar
+              bodyClassName='text-sm font-medium'
+            />
           </ThemeProvider>
         </body>
       </html>
