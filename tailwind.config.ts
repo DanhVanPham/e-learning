@@ -1,12 +1,16 @@
 import type { Config } from 'tailwindcss'
+import { withUt } from "uploadthing/tw";
 
 const config: Config = {
   darkMode: ['class'],
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
+      screens: {
+        "3xl": "1600px"
+      },
       colors: {
-        primary: '#FF9EAA',
+        primary: '#ff808e',
         grayDarkest: '#131316',
         grayDarker: '#212126',
         grayDark: '#9394A1',
@@ -32,4 +36,4 @@ const config: Config = {
   },
   plugins: [require('tailwindcss-animate')],
 }
-export default config
+export default withUt(config)

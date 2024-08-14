@@ -62,6 +62,6 @@ const lessonSchema = new Schema<ILesson>({
   },
 })
 
-const lesson = models.Lesson || model('Lesson', lessonSchema)
+const Lesson = models.Lesson || model('Lesson', lessonSchema)
 
-export default lesson
+export default Lesson

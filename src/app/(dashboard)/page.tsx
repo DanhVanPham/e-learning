@@ -1,19 +1,23 @@
-import { CourseGrid } from '@/components/common'
-import CourseItem from '@/components/course/CourseItem'
-import Heading from '@/components/typography/Heading'
-import React from 'react'
+import { CourseGrid } from "@/components/common";
+import Heading from "@/components/common/Heading";
+import CourseItem from "@/components/course/CourseItem";
+import { getAllCourses } from "@/lib/actions/course.actions";
+import React from "react";
 
-const page = () => {
+const page = async () => {
+  const courses = await getAllCourses();
+
   return (
     <div>
       <Heading>Khám phá</Heading>
       <CourseGrid>
-        <CourseItem />
-        <CourseItem />
-        <CourseItem />
+        {!!courses?.length &&
+          courses?.map((course) => (
+            <CourseItem key={course._id} data={course} />
+          ))}
       </CourseGrid>
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;

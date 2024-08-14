@@ -1,15 +1,15 @@
-import React from 'react'
-import { menuItems } from '@/constants'
-import { ActiveLink, ModeToggle } from '../common'
-import type { TMenuItem } from '@/types/index.t'
-import { SignedIn, SignedOut, UserButton, useAuth } from '@clerk/nextjs'
-import Link from 'next/link'
-import { IconUsers } from '../icons'
+import React from "react";
+import { menuItems } from "@/constants";
+import { ActiveLink, ModeToggle } from "../common";
+import type { TMenuItem } from "@/types";
+import { SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs";
+import Link from "next/link";
+import { IconUsers } from "../icons";
 
 const Sidebar = () => {
   return (
-    <aside className="sidebar p-5 border border-r-gray-200 dark:border-opacity-10 bg-white dark:bg-grayDarker flex flex-col">
-      <a href="/" className="font-bold text-3xl inline-block mb-5">
+    <aside className="fixed top-0 bottom-0 left-0 flex-col hidden p-5 border borderDarkMode bgDarkMode lg:flex w-[300px]">
+      <a href="/" className="inline-block mb-5 text-3xl font-bold">
         <span className="text-primary">E</span>
         Learning
       </a>
@@ -23,12 +23,12 @@ const Sidebar = () => {
           />
         ))}
       </ul>
-      <div className="mt-auto flex items-center justify-end gap-3">
+      <div className="flex items-center justify-end gap-3 mt-auto">
         <ModeToggle />
         <SignedOut>
           <Link
             href="/sign-in"
-            className="size-10 bg-primary text-white flex items-center justify-center p-1 rounded-lg"
+            className="flex items-center justify-center p-1 text-white rounded-lg size-10 bg-primary"
           >
             <IconUsers />
           </Link>
@@ -38,18 +38,18 @@ const Sidebar = () => {
         </SignedIn>
       </div>
     </aside>
-  )
-}
+  );
+};
 
-function MenuItem({ title = '', url = '/', icon }: TMenuItem) {
+export function MenuItem({ title = "", url = "/", icon, onlyIcon }: TMenuItem) {
   return (
     <li>
       <ActiveLink url={url}>
         {icon}
-        {title}
+        {onlyIcon ? <></> : title}
       </ActiveLink>
     </li>
-  )
+  );
 }
 
-export default Sidebar
+export default Sidebar;

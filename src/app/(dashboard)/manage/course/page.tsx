@@ -1,23 +1,16 @@
-import { CourseGrid } from "@/components/common";
-import Heading from "@/components/common/Heading";
-import CourseItem from "@/components/course/CourseItem";
-import { getAllCourses } from "@/lib/actions/course.actions";
-import { notFound } from "next/navigation";
 import React from "react";
+import CourseManage from "@/components/course/CourseManage";
+import { getAllCourses } from "@/lib/actions/course.actions";
+import { parseMongoDocToPlainObject } from "@/utils/helpers";
 
 const page = async () => {
   const courses = await getAllCourses();
-
   return (
-    <div>
-      <Heading>Khám phá</Heading>
-      <CourseGrid>
-        {!!courses?.length &&
-          courses?.map((course) => (
-            <CourseItem key={course._id} data={course} />
-          ))}
-      </CourseGrid>
-    </div>
+    <>
+      <CourseManage
+        courses={courses ? parseMongoDocToPlainObject(courses) : []}
+      />
+    </>
   );
 };
 

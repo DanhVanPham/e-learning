@@ -22,7 +22,7 @@ export interface ICourse extends Document {
     qa: {
       question: string
       answer: string
-    }
+    }[]
   }
   lectures: Schema.Types.ObjectId[]
   _destroy: boolean
@@ -58,6 +58,11 @@ const courseSchema = new Schema<ICourse>({
     type: String,
     enum: Object.values(ECourseStatus),
     default: ECourseStatus.PENDING,
+  },
+  level: {
+    type: String,
+    enum: Object.values(ECourseLevel),
+    default: ECourseLevel.BEGINNER,
   },
   created_at: {
     type: Date,

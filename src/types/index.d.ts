@@ -1,4 +1,6 @@
 import { ICourse } from '@/database/course.model'
+import { ILecture } from '@/database/lecture.model'
+import { ILesson } from '@/database/lesson.model'
 import { PropsWithChildren } from 'react'
 
 export type TActiveLink = {
@@ -9,6 +11,7 @@ export type TMenuItem = {
   url: string
   title: string
   icon: React.ReactNode
+  onlyIcon?: boolean
 }
 
 // User
@@ -29,6 +32,53 @@ export type TCreateCourseParams = {
 
 export type TUpdateCourseParams = {
   slug: string
-  updateData: Partial<ICourse>
+  updateData: Partial<ICourse>,
+  path?: string
 }
 
+interface ICourseUpdateLecture extends ILecture {
+  lessons: ILesson[]
+}
+
+export type TCourseUpdateParams = Omit<ICourse, 'lectures'> & {
+  lectures: ICourseUpdateLecture[],
+}
+
+// Lecture
+export type TCreateLectureParams = {
+  course: string
+  title?: string
+  order: number
+  path?: string
+}
+
+export type TUpdateLectuteParams = {
+  lectureId: string
+  updateData: {
+    title?: string
+    order?: string
+    _destroy?: boolean
+  },
+  path?: string
+}
+
+// Lesson
+export type TCreateLessonParams  = {
+  lecture: string
+  course: string
+  title?: string
+  order?: string
+  path?: string
+  slug?: string
+}
+
+export type TUpdateLessonParams = {
+  lessonId: string
+  updateData: {
+    title?: string
+    order?: string
+    slug?: string
+    _destroy?: boolean
+  },
+  path?: string
+}

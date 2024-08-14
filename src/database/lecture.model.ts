@@ -39,6 +39,6 @@ const lectureSchema = new Schema<ILecture>({
   },
 })
 
-const lecture = models.Lecture || model('Lecture', lectureSchema)
+const Lecture = models.Lecture || model('Lecture', lectureSchema)
 
-export default lecture
+export default Lecture

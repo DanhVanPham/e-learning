@@ -1,14 +1,31 @@
 'use server'
 
-import { TCreateCourseParams, TUpdateCourseParams } from "@/types";
+import { TCourseUpdateParams, TCreateCourseParams, TUpdateCourseParams } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import Course, { ICourse } from "@/database/course.model";
 import { revalidatePath } from "next/cache";
+import Lecture from "@/database/lecture.model";
+import Lesson from "@/database/lesson.model";
 
-export async function getCourseBySlug({slug}: {slug: string}) {
+export async function getCourseBySlug({slug}: {slug: string}): Promise<TCourseUpdateParams | undefined> {
     try {
         connectToDatabase();
-        const foundCourse = await Course.findOne({slug})
+        const foundCourse = await Course.findOne({slug}).populate({
+            path: 'lectures',
+            model: Lecture,
+            select: "_id title order",
+            match: {
+                _destroy: false
+            },
+            
+            populate: {
+                path: 'lessons',
+            model: Lesson,
+            match: {
+                _destroy: false
+            },
+            }
+        })
         return foundCourse
     } catch (error) {
         console.log(error)
@@ -50,7 +67,7 @@ export async function updateCourse(params: TUpdateCourseParams) {
         }, params.updateData, {
             new: true,
         });
-        revalidatePath('/');
+        revalidatePath(params.path || '/');
         return {
             success: true,
             data: JSON.parse(JSON.stringify(course))
