@@ -6,27 +6,30 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { ICourseUpdateLecture } from "@/types";
+import { IconPlay } from "../icons";
 
 function LectureItem({ data }: { data: ICourseUpdateLecture }) {
   return (
     <Accordion type="single" collapsible className="w-full">
-      <AccordionItem key={data._id} value={data._id}>
+      <AccordionItem value={data._id.toString()}>
         <AccordionTrigger>
-          <div className="flex items-center w-full justify-start pr-5">
+          <div className="flex items-center gap-3 w-full justify-start pr-5">
             <div>{data.title}</div>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="border-none !bg-transparent">
+        <AccordionContent className="border-none !bg-transparent p-0">
           <div className="flex flex-col gap-3">
             {data.lessons.map((lesson) => (
-              <Accordion type="single" key={lesson._id} collapsible>
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>{lesson.title}</AccordionTrigger>
-                  <AccordionContent>
-                    Yes. It adheres to the WAI-ARIA design pattern.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+              <div
+                key={lesson._id.toString()}
+                className="flex items-center gap-3 bgDarkMode border borderDarkMode rounded-lg p-3 text-sm font-medium"
+              >
+                <IconPlay className="size-4 " />
+                <h4>{lesson.title}</h4>
+                <span className="ml-auto text-xs font-semibold">
+                  {lesson.duration} phút
+                </span>
+              </div>
             ))}
           </div>
         </AccordionContent>

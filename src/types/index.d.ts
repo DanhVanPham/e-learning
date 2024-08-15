@@ -78,6 +78,9 @@ export type TUpdateLessonParams = {
     title?: string
     order?: string
     slug?: string
+    duration?: number
+    video_url?: string
+    content?: string
     _destroy?: boolean
   },
   path?: string

@@ -34,7 +34,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
   const lectures = data.lectures;
 
   return (
-    <div className="grid lg:grid-cols-[2fr,1fr] gap-10">
+    <div className="grid lg:grid-cols-[2fr,1fr] gap-10 min-h-screen">
       <div>
         <div className="relative mb-5 aspect-video">
           {data.intro_url ? (
@@ -79,7 +79,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
           <div className="flex flex-col gap-4">
             {!!lectures.length &&
               lectures.map((lecture: ICourseUpdateLecture) => (
-                <LectureItem key={lecture._id} data={lecture} />
+                <LectureItem key={lecture._id.toString()} data={lecture} />
               ))}
           </div>
         </BoxSection>
