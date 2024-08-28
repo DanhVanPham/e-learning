@@ -1,6 +1,7 @@
 import React from "react";
 import Sidebar, { MenuItem } from "@/components/layout/Sidebar";
 import { menuItems } from "@/constants";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const MainLayout = ({
   children,
@@ -23,6 +24,7 @@ const MainLayout = ({
       </div>
       <div className="hidden lg:block" />
       <main className="p-5">{children}</main>
+      <SpeedInsights />
     </div>
   );
 };
