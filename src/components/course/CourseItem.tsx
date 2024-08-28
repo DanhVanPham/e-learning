@@ -2,10 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { IconClock, IconEye, IconStar } from "../icons";
-import { ICourse } from "@/database/course.model";
 import { formatVndPrice } from "@/utils/helpers";
+import { StudyCoursesProps } from "@/types";
+import { commonClassName } from "@/constants";
 
-const CourseItem = ({ data }: { data: ICourse }) => {
+const CourseItem = ({
+  data,
+  url,
+  cta,
+}: {
+  data: StudyCoursesProps;
+  url?: string;
+  cta?: string;
+}) => {
   const courseInfo = [
     {
       title: data?.views,
@@ -27,9 +36,11 @@ const CourseItem = ({ data }: { data: ICourse }) => {
     },
   ];
 
+  const linkNavigate = url || `/course/${data?.slug}`;
+
   return (
     <div className="bg-white dark:bg-grayDarker border border-gray-200 dark:border-opacity-10 p-4 rounded-2xl flex flex-col">
-      <Link href={`/course/${data?.slug}`} className="block h-[180px] relative">
+      <Link href={linkNavigate} className="block h-[180px] relative">
         <Image
           src={data.image}
           alt="product image"
@@ -62,12 +73,8 @@ const CourseItem = ({ data }: { data: ICourse }) => {
               {formatVndPrice(Number(data?.price))}
             </span>
           </div>
-          <Link
-            href={`/course/${data?.slug}`}
-            className="w-full flex items-center justify-center 
-          rounded-lg text-white font-semibold bg-primary h-12"
-          >
-            Xem chi tiết
+          <Link href={linkNavigate} className={commonClassName.btnPrimary}>
+            {cta || "Xem chi tiết"}
           </Link>
         </div>
       </div>

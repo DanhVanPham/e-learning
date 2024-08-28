@@ -17,3 +17,14 @@ export const formatThousandSeperator = (number: Number, nullValue = 0) => {
 
     return number.toLocaleString()
 }
+
+export const normalizeData = (arrData: any[] | undefined, key: string) => {
+    if(!arrData || !arrData.length) return;
+
+    return arrData.reduce((result, currItem) => {
+        return {
+            ...result,
+            [currItem[key]]: currItem
+        }
+    }, {})
+}

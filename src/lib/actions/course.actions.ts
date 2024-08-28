@@ -1,16 +1,30 @@
 'use server'
 
-import { TCourseUpdateParams, TCreateCourseParams, TUpdateCourseParams } from "@/types";
+import { StudyCoursesProps, TCourseUpdateParams, TCreateCourseParams, TUpdateCourseParams } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import Course, { ICourse } from "@/database/course.model";
 import { revalidatePath } from "next/cache";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
+import { auth } from "@clerk/nextjs/server";
+import User from "@/database/user.model";
+import { parseMongoDocToPlainObject } from "@/utils/helpers";
+
+export async function getAllCoursesPublic(): Promise<StudyCoursesProps[] | undefined> {
+    try {
+        connectToDatabase()
+        const courses = await Course.find()
+        return parseMongoDocToPlainObject(courses);
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 export async function getCourseBySlug({slug}: {slug: string}): Promise<TCourseUpdateParams | undefined> {
     try {
         connectToDatabase();
-        const foundCourse = await Course.findOne({slug}).populate({
+        const foundCourse = await Course.findOne({slug})
+        .populate({
             path: 'lectures',
             model: Lecture,
             select: "_id title order",
@@ -20,13 +34,13 @@ export async function getCourseBySlug({slug}: {slug: string}): Promise<TCourseUp
             
             populate: {
                 path: 'lessons',
-            model: Lesson,
-            match: {
-                _destroy: false
-            },
+                model: Lesson,
+                match: {
+                    _destroy: false
+                },
             }
         })
-        return foundCourse
+        return parseMongoDocToPlainObject(foundCourse)
     } catch (error) {
         console.log(error)
     }
@@ -47,7 +61,7 @@ export async function createCourse(params: TCreateCourseParams) {
         
         return {
             success: true,
-            data: JSON.parse(JSON.stringify(course))
+            data: parseMongoDocToPlainObject(course)
         }
     } catch (error) {
         console.log(error);
@@ -70,7 +84,7 @@ export async function updateCourse(params: TUpdateCourseParams) {
         revalidatePath(params.path || '/');
         return {
             success: true,
-            data: JSON.parse(JSON.stringify(course))
+            data: parseMongoDocToPlainObject(course)
         }
     } catch (error) {
         console.log(error);
@@ -81,7 +95,32 @@ export async function getAllCourses(): Promise<ICourse[]| undefined> {
     try{
         connectToDatabase()
         const courses = await Course.find();
-        return courses;
+        return parseMongoDocToPlainObject(courses);
+    }catch(error) {
+        console.log(error)
+    }
+}
+
+export async function getAllMyCourses(): Promise<StudyCoursesProps[]| undefined> {
+    try{
+        connectToDatabase()
+        const { userId } = auth()
+        const findUser = await User.findOne({clerkId: userId}).populate({
+            path: 'courses',
+            model: Course,
+
+            populate: {
+                path: 'lectures',
+                model: Lecture,
+                select: "lessons",
+                populate: {
+                    path: "lessons",
+                    model: Lesson,
+                    select: "slug",
+                },
+            },
+        });  
+        return parseMongoDocToPlainObject(findUser?.courses);
     }catch(error) {
         console.log(error)
     }

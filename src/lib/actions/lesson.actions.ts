@@ -6,6 +6,7 @@ import Course from "@/database/course.model";
 import Lesson, { ILesson } from "@/database/lesson.model";
 import Lecture from "@/database/lecture.model";
 import { revalidatePath } from "next/cache";
+import { parseMongoDocToPlainObject } from "@/utils/helpers";
 
 export async function createLesson(params: TCreateLessonParams) {
     try {
@@ -61,7 +62,7 @@ export async function getLessonBySlug({slug, course}: {slug: string, course: str
             slug,
             course
         })
-      return foundLesson
+      return parseMongoDocToPlainObject(foundLesson)
     } catch (error) {
         console.log(error)
     }
@@ -74,7 +75,7 @@ export async function findAllLessons({course}: { course: string}): Promise<ILess
         const lessons = await Lesson.find({
             course
         })
-      return lessons
+      return parseMongoDocToPlainObject(lessons)
     } catch (error) {
         console.log(error)
     }

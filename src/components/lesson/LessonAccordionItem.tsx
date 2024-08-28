@@ -140,7 +140,7 @@ const LessonAccordionItem = ({ data }: { data: ILesson }) => {
               </>
             ) : (
               <>
-                <div>{data.title}</div>
+                <div className="line-clamp-1">{data.title}</div>
                 <div className="flex gap-2">
                   <span
                     className={cn(commonClassName.action, "text-blue-500")}

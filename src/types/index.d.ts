@@ -44,6 +44,14 @@ export type TCourseUpdateParams = Omit<ICourse, 'lectures'> & {
   lectures: ICourseUpdateLecture[],
 }
 
+export interface StudyCoursesProps extends Omit<ICourse, "lectures"> {
+  lectures: {
+    lessons: {
+      slug: string;
+    }[];
+  }[];
+}
+
 // Lecture
 export type TCreateLectureParams = {
   course: string
@@ -83,5 +91,13 @@ export type TUpdateLessonParams = {
     content?: string
     _destroy?: boolean
   },
+  path?: string
+}
+
+// History
+export type TCreateHistoryParams = {
+  course: string
+  lesson: string
+  checked: boolean | string
   path?: string
 }

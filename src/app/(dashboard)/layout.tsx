@@ -10,7 +10,7 @@ const MainLayout = ({
   return (
     <div className="wrapper block pb-20 lg:grid lg:grid-cols-[300px,minmax(0,1fr)] h-screen">
       <Sidebar />
-      <div className="flex p-3 bgDarkMode border-t borderDarkMode lg:hidden fixed bottom-0 left-0 w-full justify-center gap-5 h-16">
+      <div className="flex p-3 bgDarkMode border-t borderDarkMode lg:hidden fixed bottom-0 left-0 w-full justify-center gap-5 h-16 list-none z-10">
         {menuItems.map((menuItem, idx) => (
           <MenuItem
             key={idx}

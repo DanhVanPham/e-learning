@@ -11,6 +11,7 @@ const config: Config = {
       },
       colors: {
         primary: '#ff808e',
+        secondary: '#80D6FF',
         grayDarkest: '#131316',
         grayDarker: '#212126',
         grayDark: '#9394A1',
@@ -27,10 +28,16 @@ const config: Config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        'gradient': {
+          '0%': { backgroundPosition: '0 50%'},
+          '50%': { backgroundPosition: '50% 100%'},
+          '100%': { backgroundPosition: '0 50%'},
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        "gradient": "gradient 3s linear infinite"
       },
     },
   },

@@ -22,6 +22,28 @@
     animation: dash 1.5s linear forwards;
   }
 
+  .button-primary {
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: auto;
+      right: 0;
+      height: 100%;
+      width: 0;
+      background-color: rgba(white, 0.1);
+      transition: all 0.25s linear;
+      z-index: -1;
+    }
+    &:hover::before {
+      left: 0;
+      width: 100%;
+    }
+  }
+
   @keyframes dash {
     to {
       stroke-dashoffset: 0;
@@ -40,6 +62,18 @@
 
   .flexCenter {
     @apply flex items-center justify-center
+  }
+
+  .gradient-background {
+    @apply bg-[linear-gradient(90deg,#f3ca4d,#ff979a,#cbabff,#20e3b2,#00aefd)]
+  }
+
+  .focus-primary {
+    @apply focus:right-2 focus:ring-primary focus:ring-opacity-10
+  }
+
+  .skeleton {
+    @apply bg-gray-200 dark:bg-grayDarker animate-pulse
   }
 }
 
@@ -78,4 +112,41 @@
     }
   }
   
+}
+
+.entry-content {
+  font-size: 16px;
+  line-height: 2;
+  p, h1, h2, h3, h4, h5,h6, ul,ol, figure {
+    @apply mb-5
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol,ul {
+    @apply pl-10
+  }
+
+  a {
+    @apply underline text-primary font-medium
+  }
+}
+
+.animate-bar {
+  animation: width 5s linear 1;
+}
+
+@keyframes width {
+  from {
+    width: 100%;
+  }
+  to{
+    width: 0%
+  }
 }

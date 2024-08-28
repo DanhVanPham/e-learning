@@ -35,6 +35,7 @@ import { IconAdd } from "../icons";
 import { courseLevel, courseStatus } from "@/constants";
 import { UploadButton } from "@/utils/uploadthing";
 import Image from "next/image";
+import NumericFormatField from "../common/NumericFormatField";
 
 const formSchema = z.object({
   title: z.string().min(10, "Tên khóa học phải có ít nhất 10 ký tự"),
@@ -178,41 +179,15 @@ const CourseUpdate = ({ course }: { course: ICourse }) => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
+          <NumericFormatField
             name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Giá khuyến mãi</FormLabel>
-                <FormControl>
-                  <NumericFormat
-                    placeholder="599,000"
-                    {...field}
-                    thousandSeparator
-                    customInput={Input}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Giá khuyến mãi"
+            placeholder="599,000"
           />
-          <FormField
-            control={form.control}
+          <NumericFormatField
             name="sale_price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Giá gốc</FormLabel>
-                <FormControl>
-                  <NumericFormat
-                    placeholder="999,000"
-                    {...field}
-                    thousandSeparator
-                    customInput={Input}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Giá gốc"
+            placeholder="999,000"
           />
           <FormField
             control={form.control}
@@ -224,7 +199,7 @@ const CourseUpdate = ({ course }: { course: ICourse }) => {
                   <Textarea
                     placeholder="Khóa học hướng dẫn từ A-Z"
                     {...field}
-                    className="h-[200px]"
+                    className="h-[250px]"
                   />
                 </FormControl>
                 <FormMessage />
@@ -240,7 +215,7 @@ const CourseUpdate = ({ course }: { course: ICourse }) => {
                 <FormLabel>Ảnh đại diện</FormLabel>
                 <FormControl>
                   <div
-                    className="h-[200px] bg-white rounded-md border border-gray-50
+                    className="h-[250px] bg-white rounded-md border border-gray-50
                     flex items-center justify-center relative
                     "
                   >
@@ -261,7 +236,7 @@ const CourseUpdate = ({ course }: { course: ICourse }) => {
                         alt="image course"
                         src={imageWatch}
                         fill
-                        className="object-cover w-full h-full"
+                        className="object-cover w-full h-full rounded-md"
                       />
                     )}
                   </div>

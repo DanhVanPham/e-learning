@@ -10,8 +10,8 @@ const LessonNavigation = ({
   prevLesson,
   course,
 }: {
-  nextLesson: ILesson;
-  prevLesson: ILesson;
+  nextLesson: ILesson | undefined;
+  prevLesson: ILesson | undefined;
   course: string;
 }) => {
   const router = useRouter();
@@ -20,14 +20,18 @@ const LessonNavigation = ({
       <Button
         className="size-10 p-3"
         disabled={!prevLesson}
-        onClick={() => router.push(`${course}/lesson?slug=${prevLesson.slug}`)}
+        onClick={() =>
+          router.push(`/${course}/lesson?slug=${prevLesson?.slug}`)
+        }
       >
         <IconArrowLeft />
       </Button>
       <Button
         className="size-10 p-3"
         disabled={!nextLesson}
-        onClick={() => router.push(`${course}/lesson?slug=${nextLesson.slug}`)}
+        onClick={() =>
+          router.push(`/${course}/lesson?slug=${nextLesson?.slug}`)
+        }
       >
         <IconArrowRight />
       </Button>

@@ -21,6 +21,8 @@ import {
 import { ILecture } from "@/database/lecture.model";
 import { ICourseUpdateLecture, TCourseUpdateParams } from "@/types";
 import LectureItem from "@/components/lecture/LectureItem";
+import LessonItem from "@/components/lesson/LessonItem";
+import MuxPlayer from "@mux/mux-player-react";
 
 const page = async ({ params }: { params: { slug: string } }) => {
   const data = await getCourseBySlug({
@@ -34,12 +36,12 @@ const page = async ({ params }: { params: { slug: string } }) => {
   const lectures = data.lectures;
 
   return (
-    <div className="grid lg:grid-cols-[2fr,1fr] gap-10 min-h-screen">
+    <div className="grid lg:grid-cols-[2fr,1fr] gap-10 min-h-screen items-start">
       <div>
         <div className="relative mb-5 aspect-video">
           {data.intro_url ? (
             <>
-              <iframe
+              {/* <iframe
                 width="560"
                 height="315"
                 src={`https://www.youtube.com/embed/${videoId}`}
@@ -48,7 +50,16 @@ const page = async ({ params }: { params: { slug: string } }) => {
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
                 className="object-fill w-full h-full"
-              ></iframe>
+              ></iframe> */}
+              <MuxPlayer
+                streamType="on-demand"
+                playbackId="MrHpFNCJhaO5jvC1IQBM4iSij2moMmohJ6TeoeUNSzw"
+                metadataVideoTitle="Placeholder (optional)"
+                metadataViewerUserId="Placeholder (optional)"
+                primaryColor="#FFFFFF"
+                secondaryColor="#000000"
+                className="object-fill w-full h-full"
+              />
             </>
           ) : (
             <Image
@@ -76,10 +87,19 @@ const page = async ({ params }: { params: { slug: string } }) => {
           </div>
         </BoxSection>
         <BoxSection title="Nội dung khóa học">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-5">
             {!!lectures.length &&
               lectures.map((lecture: ICourseUpdateLecture) => (
-                <LectureItem key={lecture._id.toString()} data={lecture} />
+                <LectureItem key={lecture._id.toString()} data={lecture}>
+                  <div className="flex flex-col gap-3 mt-5">
+                    {lecture.lessons.map((lesson) => (
+                      <LessonItem
+                        key={lesson._id.toString()}
+                        data={parseMongoDocToPlainObject(lesson)}
+                      />
+                    ))}
+                  </div>
+                </LectureItem>
               ))}
           </div>
         </BoxSection>
@@ -135,7 +155,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
         </BoxSection>
         <BoxSection title="Q&A">
           <div className="leading-normal">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5">
               {data.info.qa.map((qa, idx) => (
                 <Accordion key={idx} type="single" collapsible>
                   <AccordionItem value={qa.question}>
@@ -148,7 +168,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
           </div>
         </BoxSection>
       </div>
-      <div>
+      <div className="sticky top-5 right-0">
         <div className="p-5 bg-white rounded-lg ">
           <div className="flex items-center gap-2 mb-3">
             <strong className="text-xl font-bold text-primary">
