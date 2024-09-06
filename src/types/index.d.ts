@@ -2,6 +2,9 @@ import { ICourse } from '@/database/course.model'
 import { ILecture } from '@/database/lecture.model'
 import { ILesson } from '@/database/lesson.model'
 import { PropsWithChildren } from 'react'
+import { ECourseStatus, EOrderStatus } from './enums'
+import { IOrder } from '@/database/order.model'
+import { IUser } from '@/database/user.model'
 
 export type TActiveLink = {
   url: string
@@ -52,6 +55,13 @@ export interface StudyCoursesProps extends Omit<ICourse, "lectures"> {
   }[];
 }
 
+export type TGetAllCourseParams = {
+  page: number,
+  limit: number,
+  search?: string,
+  status?: ECourseStatus
+}
+
 // Lecture
 export type TCreateLectureParams = {
   course: string
@@ -99,5 +109,34 @@ export type TCreateHistoryParams = {
   course: string
   lesson: string
   checked: boolean | string
+  path?: string
+}
+
+// Order
+export type TCreateOrderParams = {
+  code: string;
+  course: string;
+  user: string
+  total?: number
+  amount?: number
+  discount?: number
+  coupon?: string | null
+}
+
+export type TGetAllOrderParams = {
+  page: number,
+  limit: number,
+  search?: string,
+  status?: EOrderStatus
+}
+
+export type TGetAllOrderResponse = Omit<IOrder, 'course', 'user'> & {
+  course: ICourse,
+  user: IUser
+}
+
+export type TUpdateOrderStatusParams = {
+  orderId: string
+  status: EOrderStatus,
   path?: string
 }

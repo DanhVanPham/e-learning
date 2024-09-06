@@ -1,6 +1,6 @@
 'use server'
 
-import { StudyCoursesProps, TCourseUpdateParams, TCreateCourseParams, TUpdateCourseParams } from "@/types";
+import { StudyCoursesProps, TCourseUpdateParams, TCreateCourseParams, TGetAllCourseParams, TUpdateCourseParams } from "@/types";
 import { connectToDatabase } from "../mongoose";
 import Course, { ICourse } from "@/database/course.model";
 import { revalidatePath } from "next/cache";
@@ -9,11 +9,15 @@ import Lesson from "@/database/lesson.model";
 import { auth } from "@clerk/nextjs/server";
 import User from "@/database/user.model";
 import { parseMongoDocToPlainObject } from "@/utils/helpers";
+import { FilterQuery } from "mongoose";
+import { ECourseStatus } from "@/types/enums";
 
 export async function getAllCoursesPublic(): Promise<StudyCoursesProps[] | undefined> {
     try {
         connectToDatabase()
-        const courses = await Course.find()
+        const courses = await Course.find({
+            status: ECourseStatus.APPROVED
+        })
         return parseMongoDocToPlainObject(courses);
     } catch (error) {
         console.log(error);
@@ -91,11 +95,35 @@ export async function updateCourse(params: TUpdateCourseParams) {
     }
 }
 
-export async function getAllCourses(): Promise<ICourse[]| undefined> {
+export async function getAllCourses(params: TGetAllCourseParams): Promise<{
+    items: ICourse[]| undefined,
+    totalPages: number
+} | undefined> {
     try{
         connectToDatabase()
-        const courses = await Course.find();
-        return parseMongoDocToPlainObject(courses);
+        const {
+            page = 1,
+            limit = 10,
+            search,
+            status
+        } = params;
+        const skip = (page - 1) * limit;
+        const query: FilterQuery<typeof Course> = {}
+
+        if(search) {
+            query.$or = [{title: {$regex: search, $options: 'i'}}]
+        }
+
+        query.status = status || ECourseStatus.APPROVED;
+
+        const courses = await Course.find(query).skip(skip).limit(limit).sort({
+            created_at: 1
+        });
+        const itemCount = await Course.countDocuments(query)
+        return {
+            items:parseMongoDocToPlainObject(courses),
+            totalPages: Math.ceil(itemCount / limit)
+        };
     }catch(error) {
         console.log(error)
     }
@@ -108,6 +136,9 @@ export async function getAllMyCourses(): Promise<StudyCoursesProps[]| undefined>
         const findUser = await User.findOne({clerkId: userId}).populate({
             path: 'courses',
             model: Course,
+            match: {
+                status: ECourseStatus.APPROVED
+            },
 
             populate: {
                 path: 'lectures',

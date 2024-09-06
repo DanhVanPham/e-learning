@@ -28,3 +28,7 @@ export const normalizeData = (arrData: any[] | undefined, key: string) => {
         }
     }, {})
 }
+
+export const createOrderCode = () => {
+    return `DH-${new Date().getTime().toString().slice(-6)}`
+}

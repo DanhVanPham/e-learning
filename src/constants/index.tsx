@@ -8,7 +8,7 @@ import {
   IconStudy,
 } from "@/components/icons";
 import type { TMenuItem } from "@/types";
-import { ECourseLevel, ECourseStatus } from "@/types/enums";
+import { ECourseLevel, ECourseStatus, EOrderStatus } from "@/types/enums";
 
 export const menuItems: TMenuItem[] = [
   {
@@ -71,6 +71,34 @@ export const courseStatus: {
   },
 ];
 
+export const orderStatusTitle: Record<EOrderStatus, string> = {
+  [EOrderStatus.PENDING]: "Chờ duyệt",
+  [EOrderStatus.COMPLETED]: "Hoàn thành",
+  [EOrderStatus.CANCELED]: "Đã hủy",
+};
+
+export const orderStatus: {
+  title: string;
+  value: EOrderStatus;
+  className?: string;
+}[] = [
+  {
+    title: orderStatusTitle[EOrderStatus.PENDING],
+    value: EOrderStatus.PENDING,
+    className: "text-orange-500 bg-orange-500",
+  },
+  {
+    title: orderStatusTitle[EOrderStatus.COMPLETED],
+    value: EOrderStatus.COMPLETED,
+    className: "text-green-500 bg-green-500",
+  },
+  {
+    title: orderStatusTitle[EOrderStatus.CANCELED],
+    value: EOrderStatus.CANCELED,
+    className: "text-red-500 bg-red-500",
+  },
+];
+
 export const courseLevelTitle: Record<ECourseLevel, string> = {
   [ECourseLevel.BEGINNER]: "Cơ bản",
   [ECourseLevel.INTERMEDIATE]: "Trung bình",
@@ -101,7 +129,7 @@ export const commonClassName = {
   action:
     "size-8 rounded-md border flex items-center justify-center p-2  text-gray-500 hover:border-opacity-80 dark:bg-transparent borderDarkMode dark:hover:border-opacity-20",
   paginationButton:
-    "size-10 rounded-md border borderDarkMode bgDarkMode flex items-center justify-center hover:border-primary hover:text-primary transition-all",
+    "size-10 rounded-md border borderDarkMode bgDarkMode flex items-center justify-center hover:border-primary hover:text-primary transition-all  p-2.5 disabled:text-gray-300 disabled:pointer-events-none",
   btnPrimary:
     "w-full flex items-center justify-center rounded-lg text-white font-semibold bg-primary h-12 button-primary",
 };

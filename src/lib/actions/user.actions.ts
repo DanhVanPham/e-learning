@@ -3,6 +3,7 @@
 import User, { IUser } from '@/database/user.model'
 import { connectToDatabase } from '../mongoose'
 import { TCreateUserParams } from '@/types'
+import { parseMongoDocToPlainObject } from '@/utils/helpers'
 
 export async function createUser(
   params: TCreateUserParams,
@@ -25,7 +26,7 @@ export async function getUserInfo({
     connectToDatabase()
     const foundUser = await User.findOne({ clerkId: userId })
     if (!foundUser) return null
-    return foundUser
+    return parseMongoDocToPlainObject(foundUser)
   } catch (error) {
     console.log(error)
   }

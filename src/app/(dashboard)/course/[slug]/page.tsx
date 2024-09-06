@@ -1,7 +1,6 @@
 import PageNotFound from "@/app/not-found";
 import { IconPlay, IconStudy, IconUsers } from "@/components/icons";
-import { Button } from "@/components/ui/button";
-import { courseLevelTitle, courseStatusTitle } from "@/constants";
+import { courseLevelTitle } from "@/constants";
 import { getCourseBySlug } from "@/lib/actions/course.actions";
 import { ECourseStatus } from "@/types/enums";
 import Image from "next/image";
@@ -18,11 +17,13 @@ import {
   formatVndPrice,
   parseMongoDocToPlainObject,
 } from "@/utils/helpers";
-import { ILecture } from "@/database/lecture.model";
-import { ICourseUpdateLecture, TCourseUpdateParams } from "@/types";
+import { ICourseUpdateLecture } from "@/types";
 import LectureItem from "@/components/lecture/LectureItem";
 import LessonItem from "@/components/lesson/LessonItem";
 import MuxPlayer from "@mux/mux-player-react";
+import { auth } from "@clerk/nextjs/server";
+import { getUserInfo } from "@/lib/actions/user.actions";
+import ButtonEnroll from "./ButtonEnroll";
 
 const page = async ({ params }: { params: { slug: string } }) => {
   const data = await getCourseBySlug({
@@ -31,6 +32,9 @@ const page = async ({ params }: { params: { slug: string } }) => {
 
   if (!data) return notFound();
   if (data.status !== ECourseStatus.APPROVED) return <PageNotFound />;
+
+  const { userId } = auth();
+  const foundUser = await getUserInfo({ userId: userId || "" });
 
   const videoId = data.intro_url?.split("v=")[1];
   const lectures = data.lectures;
@@ -202,9 +206,14 @@ const page = async ({ params }: { params: { slug: string } }) => {
               <span>Tài liệu kèm theo</span>
             </li>
           </ul>
-          <Button variant="primary" className="w-full">
-            Mua khóa học
-          </Button>
+          <ButtonEnroll
+            user={foundUser}
+            courseId={data._id}
+            total={data.price}
+            amount={data.price}
+            discount={0}
+            coupon={null}
+          />
         </div>
       </div>
     </div>

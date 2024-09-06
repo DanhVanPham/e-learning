@@ -150,3 +150,25 @@
     width: 0%
   }
 }
+
+body .swal2-container {
+  .swal2-popup {
+    @apply w-full max-w-[450px]
+  }
+  .swal2-title {
+    @apply font-bold text-xl
+  }
+
+  .swal2-actions {
+    .swal2-confirm {
+      @apply bg-primary
+    }
+    .swal2-cancel {
+      @apply bg-transparent text-grayDarkest hover:bg-none
+    }
+
+    .swal2-confirm {
+      @apply w-[150px]
+    }
+  }
+}

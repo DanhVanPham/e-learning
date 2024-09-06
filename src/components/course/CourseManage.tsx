@@ -30,8 +30,34 @@ import { ECourseStatus } from "@/types/enums";
 import { toast } from "react-toastify";
 import { Input } from "../ui/input";
 import { formatVndPrice } from "@/utils/helpers";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { ChangeEvent, useCallback, useState } from "react";
+import { debounce } from "lodash";
+import { StatusBadge } from "../common";
+import useQueryString from "@/app/hooks/useQueryString";
 
-function CourseManage({ courses }: { courses: ICourse[] | undefined }) {
+function CourseManage({
+  courses,
+  totalPages = 1,
+  page = 1,
+  search,
+  status,
+}: {
+  courses: ICourse[] | undefined;
+  totalPages?: number;
+  page: number;
+  search: string;
+  status: ECourseStatus;
+}) {
+  const { createQueryString, router, pathname } = useQueryString();
+
   const handleDeleteCourse = (slug: string) => {
     Swal.fire({
       title: "Are you sure?",
@@ -58,13 +84,11 @@ function CourseManage({ courses }: { courses: ICourse[] | undefined }) {
 
   const handleChangeStatus = async (slug: string, status: ECourseStatus) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Bạn có chắc muốn đổi trạng thái không?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, update it!",
+      confirmButtonText: "Cập nhật",
+      cancelButtonText: "Hủy",
     }).then(async (result) => {
       if (result.isConfirmed) {
         await updateCourse({
@@ -79,8 +103,28 @@ function CourseManage({ courses }: { courses: ICourse[] | undefined }) {
           path: "/manage/course",
         });
         toast.success("Cập nhật trạng thái thành công");
+        router.push(`${pathname}?${createQueryString("status", "")}`);
       }
     });
+  };
+
+  const handleSearchCourse = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    router.push(`${pathname}?${createQueryString("search", e.target.value)}`);
+  }, 500);
+
+  const changeFilterStatus = (value: string) => {
+    router.push(`${pathname}?${createQueryString("status", value)}`);
+  };
+
+  const handleChangePage = (type: "prev" | "next") => {
+    if (type === "prev" && page === 1) return;
+    let currPage = Number(page);
+    if (type === "prev") currPage -= 1;
+    if (type === "next") currPage += 1;
+
+    router.push(
+      `${pathname}?${createQueryString("page", currPage.toString())}`
+    );
   };
 
   return (
@@ -106,8 +150,31 @@ function CourseManage({ courses }: { courses: ICourse[] | undefined }) {
       </Link>
       <div className="flex flex-col lg:flex-row lg:items-center gap-5 justify-between mb-10">
         <Heading>Quản lý khóa học</Heading>
-        <div className="w-full lg:w-[300px]">
-          <Input placeholder="Tìm kiếm khóa học..." />
+        <div className="flex gap-3">
+          <div className="w-full lg:w-[300px]">
+            <Input
+              defaultValue={search || ""}
+              placeholder="Tìm kiếm khóa học..."
+              onChange={(e) => handleSearchCourse(e)}
+            />
+          </div>
+          <Select
+            defaultValue={status || ""}
+            onValueChange={changeFilterStatus}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Chọn trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {courseStatus.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.title}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <Table className="table-responsive">
@@ -154,18 +221,15 @@ function CourseManage({ courses }: { courses: ICourse[] | undefined }) {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <button
-                      type="button"
-                      className={cn(
-                        commonClassName.status,
-                        foundCourseStatus?.className
-                      )}
+                    <StatusBadge
+                      item={{
+                        className: foundCourseStatus?.className,
+                        title: foundCourseStatus?.title || "",
+                      }}
                       onClick={() =>
                         handleChangeStatus(course.slug, course.status)
                       }
-                    >
-                      {foundCourseStatus?.title}
-                    </button>
+                    />
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-3">
@@ -202,10 +266,18 @@ function CourseManage({ courses }: { courses: ICourse[] | undefined }) {
         </TableBody>
       </Table>
       <div className="flex justify-end gap-3 mt-5">
-        <button className={commonClassName.paginationButton}>
+        <button
+          className={commonClassName.paginationButton}
+          disabled={page <= 1}
+          onClick={() => handleChangePage("prev")}
+        >
           <IconArrowLeft />
         </button>
-        <button className={commonClassName.paginationButton}>
+        <button
+          className={commonClassName.paginationButton}
+          disabled={page >= totalPages}
+          onClick={() => handleChangePage("next")}
+        >
           <IconArrowRight />
         </button>
       </div>
