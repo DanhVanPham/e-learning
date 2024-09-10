@@ -2,7 +2,7 @@ import React from "react";
 import { menuItems } from "@/constants";
 import { ActiveLink, ModeToggle } from "../common";
 import type { TMenuItem } from "@/types";
-import { SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { IconUsers } from "../icons";
 

@@ -6,9 +6,16 @@ import {
   IconComment,
   IconUsers,
   IconStudy,
+  IconCurrency,
 } from "@/components/icons";
 import type { TMenuItem } from "@/types";
-import { ECourseLevel, ECourseStatus, EOrderStatus } from "@/types/enums";
+import {
+  ECouponType,
+  ECourseLevel,
+  ECourseStatus,
+  EOrderStatus,
+} from "@/types/enums";
+import { z } from "zod";
 
 export const menuItems: TMenuItem[] = [
   {
@@ -35,6 +42,11 @@ export const menuItems: TMenuItem[] = [
     title: "Quản lý đơn hàng",
     url: "/manage/order",
     icon: <IconOrder className="size-5" />,
+  },
+  {
+    title: "Quản lý coupon",
+    url: "/manage/coupon",
+    icon: <IconCurrency className="size-5" />,
   },
   {
     title: "Quản lý bình luận",
@@ -123,6 +135,20 @@ export const courseLevel: {
   },
 ];
 
+export const couponTypes: {
+  title: string;
+  value: ECouponType;
+}[] = [
+  {
+    title: "Phần trăm",
+    value: ECouponType.PERCENT,
+  },
+  {
+    title: "Giá trị",
+    value: ECouponType.AMOUNT,
+  },
+];
+
 export const commonClassName = {
   status:
     "bg-opacity-10 bg-current border border-current rounded-md font-medium text-sm px-3 py-1 whitespace-nowrap",
@@ -173,3 +199,24 @@ export const editorOptions = (field: any, theme: any) => ({
 });
 
 export const lastLessonKey = "lastLesson";
+
+export const couponFormSchema = z.object({
+  title: z
+    .string({
+      message: "Tiêu đề không được để trống",
+    })
+    .min(10, "Tiêu đề phải có ít nhất 10 ký tự"),
+  code: z
+    .string({
+      message: "Mã giảm giá không được để trống",
+    })
+    .min(3, "Mã giảm giá phải có ít nhất 3 ký tự")
+    .max(10, "Mã giảm giá không được quá 10 ký tự"),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+  active: z.boolean().optional(),
+  value: z.string().optional(),
+  type: z.enum([ECouponType.AMOUNT, ECouponType.PERCENT]),
+  courses: z.array(z.string()).optional(),
+  limit: z.number().optional(),
+});

@@ -1,7 +1,13 @@
 import PageNotFound from "@/app/not-found";
-import { IconPlay, IconStudy, IconUsers } from "@/components/icons";
-import { courseLevelTitle } from "@/constants";
-import { getCourseBySlug } from "@/lib/actions/course.actions";
+import {
+  IconPlay,
+  IconStar,
+  IconStarFill,
+  IconStudy,
+  IconUsers,
+} from "@/components/icons";
+import { commonClassName, courseLevelTitle } from "@/constants";
+import { getAllMyCourses, getCourseBySlug } from "@/lib/actions/course.actions";
 import { ECourseStatus } from "@/types/enums";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -24,6 +30,11 @@ import MuxPlayer from "@mux/mux-player-react";
 import { auth } from "@clerk/nextjs/server";
 import { getUserInfo } from "@/lib/actions/user.actions";
 import ButtonEnroll from "./ButtonEnroll";
+import { UserButton } from "@clerk/nextjs";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import CourseWidget from "./CourseWidget";
+import AlreadyEnroll from "./AlreadyEnroll";
 
 const page = async ({ params }: { params: { slug: string } }) => {
   const data = await getCourseBySlug({
@@ -38,6 +49,11 @@ const page = async ({ params }: { params: { slug: string } }) => {
 
   const videoId = data.intro_url?.split("v=")[1];
   const lectures = data.lectures;
+
+  const alreadyBuyCourse =
+    foundUser?.courses?.find(
+      (courseId) => String(courseId) === String(data._id)
+    ) ?? false;
 
   return (
     <div className="grid lg:grid-cols-[2fr,1fr] gap-10 min-h-screen items-start">
@@ -173,48 +189,10 @@ const page = async ({ params }: { params: { slug: string } }) => {
         </BoxSection>
       </div>
       <div className="sticky top-5 right-0">
-        <div className="p-5 bg-white rounded-lg ">
-          <div className="flex items-center gap-2 mb-3">
-            <strong className="text-xl font-bold text-primary">
-              {formatVndPrice(Number(data.price))}
-            </strong>
-            <span className="text-sm line-through text-slate-500">
-              {formatVndPrice(Number(data.sale_price))}
-            </span>
-            <span className="inline-block px-3 py-1 ml-auto text-sm font-semibold rounded-lg text-primary bg-primary bg-opacity-10">
-              {data.price &&
-                data.sale_price &&
-                `${Math.round((data.price / data.sale_price) * 100)}%`}
-            </span>
-          </div>
-          <h3 className="mb-3 text-sm font-bold">Khóa học gồm có:</h3>
-          <ul className="flex flex-col gap-2 mb-5 text-sm text-slate-500">
-            <li className="flex items-center gap-2">
-              <IconPlay className="size-4" />
-              <span>30h học</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <IconPlay className="size-4" />
-              <span>Video Full HD</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <IconUsers className="size-4" />
-              <span>Có nhóm hỗ trợ</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <IconStudy className="size-4" />
-              <span>Tài liệu kèm theo</span>
-            </li>
-          </ul>
-          <ButtonEnroll
-            user={foundUser}
-            courseId={data._id}
-            total={data.price}
-            amount={data.price}
-            discount={0}
-            coupon={null}
-          />
-        </div>
+        {!alreadyBuyCourse && (
+          <CourseWidget course={data} foundUser={foundUser} />
+        )}
+        {!!alreadyBuyCourse && <AlreadyEnroll user={foundUser} />}
       </div>
     </div>
   );
