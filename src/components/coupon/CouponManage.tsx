@@ -49,7 +49,7 @@ function CouponManage({
     <div>
       <Link
         href="/manage/coupon/new"
-        className="size-10 rounded-full bg-primary flexCenter text-white  fixed right-5 bottom-5 hover:animate-spin"
+        className="size-10 rounded-full bg-primary flexCenter text-white fixed right-5 bottom-5 hover:animate-spin"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

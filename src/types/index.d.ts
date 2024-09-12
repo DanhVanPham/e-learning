@@ -2,7 +2,7 @@ import { ICourse } from '@/database/course.model'
 import { ILecture } from '@/database/lecture.model'
 import { ILesson } from '@/database/lesson.model'
 import { PropsWithChildren } from 'react'
-import { ECourseStatus, EOrderStatus } from './enums'
+import { ECouponType, ECourseStatus, EOrderStatus } from './enums'
 import { IOrder } from '@/database/order.model'
 import { IUser } from '@/database/user.model'
 
@@ -56,8 +56,8 @@ export interface StudyCoursesProps extends Omit<ICourse, "lectures"> {
 }
 
 export type TGetAllCourseParams = {
-  page: number,
-  limit: number,
+  page?: number,
+  limit?: number,
   search?: string,
   status?: ECourseStatus
 }
@@ -139,4 +139,17 @@ export type TUpdateOrderStatusParams = {
   orderId: string
   status: EOrderStatus,
   path?: string
+}
+
+// Coupon
+export type TCreateCouponParams = {
+  title: string
+  code: string;
+  start_date?: string;
+  end_date?: string
+  active: boolean
+  value?: string
+  limit?: number
+  type: ECouponType
+  courses?: string[];
 }

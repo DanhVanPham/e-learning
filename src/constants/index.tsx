@@ -212,11 +212,17 @@ export const couponFormSchema = z.object({
     })
     .min(3, "Mã giảm giá phải có ít nhất 3 ký tự")
     .max(10, "Mã giảm giá không được quá 10 ký tự"),
-  start_date: z.string().optional(),
-  end_date: z.string().optional(),
+  start_date: z.date().optional(),
+  end_date: z.date().optional(),
   active: z.boolean().optional(),
-  value: z.string().optional(),
+  value: z.number().optional(),
   type: z.enum([ECouponType.AMOUNT, ECouponType.PERCENT]),
-  courses: z.array(z.string()).optional(),
+  courses: z
+    .array(
+      z.object({
+        _id: z.string().min(1),
+      })
+    )
+    .optional(),
   limit: z.number().optional(),
 });
