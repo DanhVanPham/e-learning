@@ -5,6 +5,7 @@ import { PropsWithChildren } from 'react'
 import { ECouponType, ECourseStatus, EOrderStatus } from './enums'
 import { IOrder } from '@/database/order.model'
 import { IUser } from '@/database/user.model'
+import { ICoupon } from '@/database/coupon.model'
 
 export type TActiveLink = {
   url: string
@@ -152,4 +153,20 @@ export type TCreateCouponParams = {
   limit?: number
   type: ECouponType
   courses?: string[];
+}
+
+export type TGetAllCouponParams = {
+  page?: number,
+  limit?: number,
+  search?: string,
+}
+
+export type TGetCouponResponse = Omit<ICoupon, 'courses'> & {
+  courses: ICourse[],
+}
+
+export type TUpdateCouponParams = {
+  code: string
+  updateData: Partial<ICoupon>,
+  path?: string
 }

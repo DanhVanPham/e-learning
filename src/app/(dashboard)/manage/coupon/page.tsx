@@ -1,5 +1,6 @@
 import CouponManage from "@/components/coupon/CouponManage";
 import OrderManage from "@/components/order/OrderManage";
+import { getAllCoupons } from "@/lib/actions/coupon.actions";
 import { getAllOrder } from "@/lib/actions/order.actions";
 import React from "react";
 
@@ -13,7 +14,7 @@ const page = async ({
 }) => {
   const { page, search } = searchParams;
 
-  const paginationData = await getAllOrder({
+  const paginationData = await getAllCoupons({
     page,
     limit: 5,
     search: search || "",

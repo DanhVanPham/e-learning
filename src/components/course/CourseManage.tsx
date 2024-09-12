@@ -3,25 +3,14 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import Heading from "../common/Heading";
 import Image from "next/image";
-import { commonClassName, courseLevel, courseStatus } from "@/constants";
-import { cn } from "@/lib/utils";
-import {
-  IconArrowLeft,
-  IconArrowRight,
-  IconDelete,
-  IconEdit,
-  IconEye,
-  IconStudy,
-} from "../icons";
+import { courseStatus } from "@/constants";
 import Link from "next/link";
 import { ICourse } from "@/database/course.model";
 import Swal from "sweetalert2";
@@ -38,10 +27,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent } from "react";
 import { debounce } from "lodash";
 import { StatusBadge } from "../common";
 import useQueryString from "@/app/hooks/useQueryString";
+import TableActions from "../common/TableActions";
+import TableActionItem from "../common/TableActionItem";
+import Pagination from "../common/Pagination";
 
 function CourseManage({
   courses,
@@ -60,13 +52,13 @@ function CourseManage({
 
   const handleDeleteCourse = (slug: string) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Bạn có chắc muốn xoá khóa học này không?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Thoát",
     }).then(async (result) => {
       if (result.isConfirmed) {
         await updateCourse({
@@ -232,55 +224,36 @@ function CourseManage({
                     />
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-3">
-                      <Link
-                        href={`/manage/course/update-content?slug=${course.slug}`}
-                        className={commonClassName.action}
-                      >
-                        <IconStudy />
-                      </Link>
-                      <Link
-                        href={`/course/${course.slug}`}
-                        target="_blank"
-                        className={commonClassName.action}
-                      >
-                        <IconEye />
-                      </Link>
-                      <Link
-                        href={`/manage/course/update?slug=${course.slug}`}
-                        className={commonClassName.action}
-                      >
-                        <IconEdit />
-                      </Link>
-                      <button
-                        className={commonClassName.action}
+                    <TableActions>
+                      <TableActionItem
+                        type="study"
+                        url={`/manage/course/update-content?slug=${course.slug}`}
+                      />
+                      <TableActionItem
+                        type="view"
+                        url={`/course/${course.slug}`}
+                      />
+                      <TableActionItem
+                        type="edit"
+                        url={`/manage/course/update?slug=${course.slug}`}
+                      />
+                      <TableActionItem
+                        type="delete"
                         onClick={() => handleDeleteCourse(course.slug)}
-                      >
-                        <IconDelete />
-                      </button>
-                    </div>
+                      />
+                    </TableActions>
                   </TableCell>
                 </TableRow>
               );
             })}
         </TableBody>
       </Table>
-      <div className="flex justify-end gap-3 mt-5">
-        <button
-          className={commonClassName.paginationButton}
-          disabled={page <= 1}
-          onClick={() => handleChangePage("prev")}
-        >
-          <IconArrowLeft />
-        </button>
-        <button
-          className={commonClassName.paginationButton}
-          disabled={page >= totalPages}
-          onClick={() => handleChangePage("next")}
-        >
-          <IconArrowRight />
-        </button>
-      </div>
+      <Pagination
+        currPage={page}
+        totalPage={totalPages}
+        onChangePrev={() => handleChangePage("prev")}
+        onChangeNext={() => handleChangePage("next")}
+      />
     </div>
   );
 }

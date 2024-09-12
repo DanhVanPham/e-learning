@@ -3,19 +3,27 @@
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import Heading from "../common/Heading";
-import { commonClassName } from "@/constants";
-import { IconArrowLeft, IconArrowRight } from "../icons";
 import { Input } from "../ui/input";
 import { ChangeEvent } from "react";
 import { debounce } from "lodash";
-import type { TGetAllOrderResponse } from "@/types";
 import useQueryString from "@/app/hooks/useQueryString";
 import Link from "next/link";
+import { ECouponType } from "@/types/enums";
+import { formatVndPrice } from "@/utils/helpers";
+import { StatusBadge } from "../common";
+import TableActions from "../common/TableActions";
+import TableActionItem from "../common/TableActionItem";
+import Pagination from "../common/Pagination";
+import { ICoupon } from "@/database/coupon.model";
+import Swal from "sweetalert2";
+import { deleteCoupon } from "@/lib/actions/coupon.actions";
+import { toast } from "react-toastify";
 
 function CouponManage({
   coupons,
@@ -23,7 +31,7 @@ function CouponManage({
   page = 1,
   search,
 }: {
-  coupons: TGetAllOrderResponse[] | undefined;
+  coupons: ICoupon[] | undefined;
   totalPages?: number;
   page: number;
   search: string;
@@ -43,6 +51,24 @@ function CouponManage({
     router.push(
       `${pathname}?${createQueryString("page", currPage.toString())}`
     );
+  };
+
+  const handleDeleteCoupon = (id: string): void => {
+    Swal.fire({
+      title: "Bạn có chắc muốn xoá mã giảm giá này không?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Thoát",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const isSuccess = await deleteCoupon(id, "/manage/coupon");
+        if (isSuccess) toast.success("Xoá mã giảm giá thành công");
+        else toast.error("Xóa mã giảm giá thất bại!");
+      }
+    });
   };
 
   return (
@@ -87,24 +113,67 @@ function CouponManage({
             <TableHead>Hành động</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody></TableBody>
+        <TableBody>
+          {!!coupons?.length &&
+            coupons?.map((coupon) => {
+              return (
+                <TableRow key={coupon._id}>
+                  <TableCell>
+                    <strong>{coupon.code}</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>{coupon.title}</strong>
+                  </TableCell>
+                  <TableCell>
+                    {coupon.type === ECouponType.AMOUNT ? (
+                      <>{formatVndPrice(Number(coupon.value))}</>
+                    ) : (
+                      <>{coupon.value}%</>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {coupon.used || 0} / {coupon.limit}
+                  </TableCell>
+                  <TableCell>
+                    {coupon.active ? (
+                      <StatusBadge
+                        item={{
+                          className: "text-green-500 bg-green-500",
+                          title: "Đang hoạt động",
+                        }}
+                      />
+                    ) : (
+                      <StatusBadge
+                        item={{
+                          className: "text-red-500 bg-red-500",
+                          title: "Chưa kích hoạt",
+                        }}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <TableActions>
+                      <TableActionItem
+                        type="edit"
+                        url={`/manage/coupon/update?code=${coupon.code}`}
+                      />
+                      <TableActionItem
+                        type="delete"
+                        onClick={() => handleDeleteCoupon(coupon._id)}
+                      />
+                    </TableActions>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+        </TableBody>
       </Table>
-      <div className="flex justify-end gap-3 mt-5">
-        <button
-          className={commonClassName.paginationButton}
-          disabled={page <= 1}
-          onClick={() => handleChangePage("prev")}
-        >
-          <IconArrowLeft />
-        </button>
-        <button
-          className={commonClassName.paginationButton}
-          disabled={page >= totalPages}
-          onClick={() => handleChangePage("next")}
-        >
-          <IconArrowRight />
-        </button>
-      </div>
+      <Pagination
+        currPage={page}
+        totalPage={totalPages}
+        onChangePrev={() => handleChangePage("prev")}
+        onChangeNext={() => handleChangePage("next")}
+      />
     </div>
   );
 }

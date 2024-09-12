@@ -3,28 +3,14 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import Heading from "../common/Heading";
-import Image from "next/image";
-import { commonClassName, courseLevel, orderStatus } from "@/constants";
+import { orderStatus } from "@/constants";
 import { cn } from "@/lib/utils";
-import {
-  IconArrowLeft,
-  IconArrowRight,
-  IconCancel,
-  IconCheck,
-  IconDelete,
-  IconEdit,
-  IconEye,
-  IconStudy,
-} from "../icons";
-import Link from "next/link";
 import Swal from "sweetalert2";
 import { EOrderStatus } from "@/types/enums";
 import { toast } from "react-toastify";
@@ -38,13 +24,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent } from "react";
 import { debounce } from "lodash";
-import { IOrder } from "@/database/order.model";
 import type { TGetAllOrderResponse } from "@/types";
 import { updateOrderStatus } from "@/lib/actions/order.actions";
 import { StatusBadge } from "../common";
 import useQueryString from "@/app/hooks/useQueryString";
+import TableActions from "../common/TableActions";
+import TableActionItem from "../common/TableActionItem";
+import Pagination from "../common/Pagination";
 
 function OrderManage({
   orders,
@@ -189,55 +177,39 @@ function OrderManage({
                     />
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-3">
+                    <TableActions>
                       {order.status === EOrderStatus.PENDING && (
-                        <button
-                          type="button"
-                          className={commonClassName.action}
+                        <TableActionItem
+                          type="check"
                           onClick={() =>
                             handleChangeStatus(
                               order._id,
                               EOrderStatus.COMPLETED
                             )
                           }
-                        >
-                          <IconCheck />
-                        </button>
+                        />
                       )}
                       {order.status !== EOrderStatus.CANCELED && (
-                        <button
-                          type="button"
-                          className={commonClassName.action}
+                        <TableActionItem
+                          type="cancel"
                           onClick={() =>
                             handleChangeStatus(order._id, EOrderStatus.CANCELED)
                           }
-                        >
-                          <IconCancel />
-                        </button>
+                        />
                       )}
-                    </div>
+                    </TableActions>
                   </TableCell>
                 </TableRow>
               );
             })}
         </TableBody>
       </Table>
-      <div className="flex justify-end gap-3 mt-5">
-        <button
-          className={commonClassName.paginationButton}
-          disabled={page <= 1}
-          onClick={() => handleChangePage("prev")}
-        >
-          <IconArrowLeft />
-        </button>
-        <button
-          className={commonClassName.paginationButton}
-          disabled={page >= totalPages}
-          onClick={() => handleChangePage("next")}
-        >
-          <IconArrowRight />
-        </button>
-      </div>
+      <Pagination
+        currPage={page}
+        totalPage={totalPages}
+        onChangePrev={() => handleChangePage("prev")}
+        onChangeNext={() => handleChangePage("next")}
+      />
     </div>
   );
 }

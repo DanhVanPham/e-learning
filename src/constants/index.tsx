@@ -226,3 +226,5 @@ export const couponFormSchema = z.object({
     .optional(),
   limit: z.number().optional(),
 });
+
+export const formatDateStr = "dd/MM/yyyy";

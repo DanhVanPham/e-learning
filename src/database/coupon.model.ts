@@ -12,6 +12,7 @@ export interface ICoupon extends Document {
     type: ECouponType
     courses?: string[]
     limit?: number
+    used?: number
     _destroy: boolean
 }
 
@@ -31,6 +32,10 @@ const couponSchema = new Schema<ICoupon>({
         default: true
     },
     value: String,
+    used: {
+        type: Number,
+        default: 0
+    },
     type: {
         type: String,
         enum: Object.values(ECouponType),
