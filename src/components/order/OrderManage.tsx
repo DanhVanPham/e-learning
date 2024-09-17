@@ -167,7 +167,9 @@ function OrderManage({
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>
+                    <strong>{order.coupon?.code || ""}</strong>
+                  </TableCell>
                   <TableCell>
                     <StatusBadge
                       item={{

@@ -85,12 +85,13 @@ const CouponAddNew = ({ user }: { user?: IUser }) => {
         courses: courses?.map((course) => course._id),
       };
       const resCoupon = await createCoupon(params);
-      if (resCoupon) {
+      if (resCoupon?.success) {
         form.reset();
-        return toast.success("Tạo mới mã giảm giá thành công");
+        toast.success("Tạo mới mã giảm giá thành công");
+        return;
       }
 
-      toast.error("Tạo mới mã giảm giá thất bại");
+      toast.error(resCoupon?.message || "Tạo mới mã giảm giá thất bại");
     } catch (error) {
       console.log(error);
       toast.error("Tạo mới mã giảm giá thất bại");
@@ -149,6 +150,7 @@ const CouponAddNew = ({ user }: { user?: IUser }) => {
                   <Input
                     id="code"
                     placeholder="Mã giảm giá"
+                    className="font-bold uppercase"
                     {...field}
                     onChange={(e) =>
                       field.onChange(e.target.value.toUpperCase())
@@ -261,7 +263,7 @@ const CouponAddNew = ({ user }: { user?: IUser }) => {
           <FormField
             control={form.control}
             name="value"
-            render={({ field }) => (
+            render={({ field: { onChange, ...rest } }) => (
               <FormItem>
                 <FormLabel htmlFor="value">Giá trị</FormLabel>
                 <FormControl>
@@ -271,15 +273,15 @@ const CouponAddNew = ({ user }: { user?: IUser }) => {
                         id="value"
                         type="number"
                         placeholder="100"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        {...rest}
+                        onChange={(e) => onChange(e.target.valueAsNumber)}
                       />
                     ) : (
                       <InputFormatCurrency
                         id="value"
-                        {...field}
+                        {...rest}
                         onValueChange={(values) => {
-                          field.onChange(values.floatValue);
+                          onChange(values.floatValue);
                         }}
                       />
                     )}

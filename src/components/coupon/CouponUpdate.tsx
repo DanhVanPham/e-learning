@@ -99,7 +99,7 @@ const CouponUpdate = ({ coupon }: { coupon?: TGetCouponResponse }) => {
         return;
       }
 
-      toast.error("Cập nhật mã giảm giá thất bại");
+      toast.error(res?.message || "Cập nhật mã giảm giá thất bại");
     } catch (error) {
       console.log(error);
       toast.error("Cập nhật mã giảm giá thất bại");
@@ -158,6 +158,8 @@ const CouponUpdate = ({ coupon }: { coupon?: TGetCouponResponse }) => {
                   <Input
                     id="code"
                     placeholder="Mã giảm giá"
+                    className="font-bold uppercase"
+                    disabled
                     {...field}
                     onChange={(e) =>
                       field.onChange(e.target.value.toUpperCase())
@@ -270,7 +272,7 @@ const CouponUpdate = ({ coupon }: { coupon?: TGetCouponResponse }) => {
           <FormField
             control={form.control}
             name="value"
-            render={({ field }) => (
+            render={({ field: { onChange, ...rest } }) => (
               <FormItem>
                 <FormLabel htmlFor="value">Giá trị</FormLabel>
                 <FormControl>
@@ -280,15 +282,15 @@ const CouponUpdate = ({ coupon }: { coupon?: TGetCouponResponse }) => {
                         id="value"
                         type="number"
                         placeholder="100"
-                        {...field}
-                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                        {...rest}
+                        onChange={(e) => onChange(e.target.valueAsNumber)}
                       />
                     ) : (
                       <InputFormatCurrency
                         id="value"
-                        {...field}
+                        {...rest}
                         onValueChange={(values) => {
-                          field.onChange(values.floatValue);
+                          onChange(values.floatValue);
                         }}
                       />
                     )}

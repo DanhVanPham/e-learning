@@ -131,9 +131,13 @@ export type TGetAllOrderParams = {
   status?: EOrderStatus
 }
 
-export type TGetAllOrderResponse = Omit<IOrder, 'course', 'user'> & {
+export type TGetAllOrderResponse = Omit<IOrder, 'course', 'user', 'coupon'> & {
   course: ICourse,
-  user: IUser
+  user: IUser,
+  coupon?: {
+    _id: string,
+    code: string
+  }
 }
 
 export type TUpdateOrderStatusParams = {

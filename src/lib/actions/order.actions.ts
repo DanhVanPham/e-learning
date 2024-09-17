@@ -9,10 +9,17 @@ import { FilterQuery } from "mongoose"
 import Course from "@/database/course.model"
 import User from "@/database/user.model"
 import { revalidatePath } from "next/cache"
+import Coupon from "@/database/coupon.model"
 
 export async function createOrder(params: TCreateOrderParams) {
     try {
         connectToDatabase()
+        if(params.coupon) {
+            await Coupon.findByIdAndUpdate(params.coupon, {
+                // increment used times
+                $inc: {used: 1}
+            })
+        }
         const newOrder = await Order.create(params)
         console.log(newOrder)
         return parseMongoDocToPlainObject(newOrder)
@@ -55,11 +62,15 @@ export async function getAllOrder(params: TGetAllOrderParams): Promise<{
             path: 'user',
             model: User,
             select: "_id name email username avatar",
-        }])
-        .skip(skip).limit(limit)
-        .sort({
-            created_at: 1
-        });
+        },
+        {
+            path: 'coupon',
+            model: Coupon,
+            select: "_id code",
+        }
+    ]).sort({
+        created_at: -1
+    }).skip(skip).limit(limit);
         const itemCount = await Order.countDocuments(query)
 
         return {

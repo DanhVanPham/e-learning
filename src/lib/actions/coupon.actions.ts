@@ -11,8 +11,18 @@ import Course from "@/database/course.model";
 export async function createCoupon(params: TCreateCouponParams) {
     try {
         connectToDatabase()
+        const couponByCode = await getCouponByCode({code: params.code })
+        if(couponByCode) {
+            return {
+                success: false,
+                message: 'Code coupon đã tồn tại!',
+            }
+        }
         const newCoupon = await Coupon.create(params);
-        return parseMongoDocToPlainObject(newCoupon);
+        return {
+            success: true,
+            data: parseMongoDocToPlainObject(newCoupon)
+        };
     } catch (error) {
         console.log(error)
     }
@@ -36,9 +46,9 @@ export async function getAllCoupons(params: TGetAllCouponParams): Promise<{
             query.$or = [{title: {$regex: search, $options: 'i'}}]
         }
 
-        const coupons = await Coupon.find(query).skip(skip).limit(limit).sort({
-            created_at: 1
-        });
+        const coupons = await Coupon.find(query).sort({
+            created_at: -1
+        }).skip(skip).limit(limit);
         const itemCount = await Coupon.countDocuments(query)
         return {
             items:parseMongoDocToPlainObject(coupons),
@@ -63,6 +73,34 @@ export async function getCouponByCode({code}: {code: string}): Promise<TGetCoupo
     }
 }
 
+export async function getValidateCoupon({code, courseId}: {code: string, courseId: string}): Promise<TGetCouponResponse | undefined> {
+    try {
+        connectToDatabase();
+        const foundCoupon = await Coupon.findOne({code})
+        .populate({
+            path: 'courses',
+            model: Course,
+        })
+        const coupon = parseMongoDocToPlainObject(foundCoupon)
+        const couponCourses = coupon?.courses?.map((course: any) => course?._id);
+
+        let isActive = true;
+        if (!coupon || !coupon?.active) isActive = false;
+        if(couponCourses?.length && !couponCourses?.includes(courseId)) isActive = false;
+        if (coupon?.used && coupon?.limit && coupon?.used + 1 > coupon?.limit)
+          isActive = false;
+        if (
+          (coupon?.start_date && new Date(coupon.start_date) > new Date()) ||
+          (coupon?.end_date && new Date(coupon.end_date) < new Date())
+        )
+          isActive = false;
+
+        return isActive ? coupon : undefined;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export async function deleteCoupon(id: string, path?: string): Promise<boolean | undefined> {
     try {
         connectToDatabase()
@@ -78,10 +116,18 @@ export async function deleteCoupon(id: string, path?: string): Promise<boolean |
 export async function updateCoupon(params: TUpdateCouponParams) {
     try {
         connectToDatabase();
-        const existCoupon = await Coupon.findOne({
+        const foundCoupon = await Coupon.findOne({
             code: params.code
         })
-        if(!existCoupon) return;
+        if(!foundCoupon) return;
+
+        const couponByCode = await getCouponByCode({code: params.updateData?.code || ''})
+        if(couponByCode && String(couponByCode._id) !== String(foundCoupon._id)) {
+            return {
+                success: false,
+                message: 'Code coupon đã tồn tại!',
+            }
+        }
 
         const coupon = await Coupon.findOneAndUpdate({
             code: params.code

@@ -200,31 +200,62 @@ export const editorOptions = (field: any, theme: any) => ({
 
 export const lastLessonKey = "lastLesson";
 
-export const couponFormSchema = z.object({
-  title: z
-    .string({
-      message: "Tiêu đề không được để trống",
-    })
-    .min(10, "Tiêu đề phải có ít nhất 10 ký tự"),
-  code: z
-    .string({
-      message: "Mã giảm giá không được để trống",
-    })
-    .min(3, "Mã giảm giá phải có ít nhất 3 ký tự")
-    .max(10, "Mã giảm giá không được quá 10 ký tự"),
-  start_date: z.date().optional(),
-  end_date: z.date().optional(),
-  active: z.boolean().optional(),
-  value: z.number().optional(),
-  type: z.enum([ECouponType.AMOUNT, ECouponType.PERCENT]),
-  courses: z
-    .array(
-      z.object({
-        _id: z.string().min(1),
+export const couponFormSchema = z
+  .object({
+    title: z
+      .string({
+        message: "Tiêu đề không được để trống",
       })
-    )
-    .optional(),
-  limit: z.number().optional(),
-});
+      .min(10, "Tiêu đề phải có ít nhất 10 ký tự"),
+    code: z
+      .string({
+        message: "Mã giảm giá không được để trống",
+      })
+      .min(3, "Mã giảm giá phải có ít nhất 3 ký tự")
+      .max(10, "Mã giảm giá không được quá 10 ký tự")
+      .regex(
+        /^[A-Z0-9\-]{3,9}$/,
+        "Mã giảm giá phải có 3-9 ký tự, bao gồm A-Z, 0-9 và dấu '-'"
+      ),
+    start_date: z.date().optional(),
+    end_date: z.date().optional(),
+    active: z.boolean().optional(),
+    value: z.number().optional(),
+    type: z.enum([ECouponType.AMOUNT, ECouponType.PERCENT]),
+    courses: z
+      .array(
+        z.object({
+          _id: z.string().min(1),
+        })
+      )
+      .optional(),
+    limit: z.number().optional(),
+  })
+  .refine(
+    (data) =>
+      !data.start_date || !data.end_date || data.end_date > data.start_date,
+    {
+      message: "Ngày kết thúc phải sau ngày bắt đầu",
+      path: ["end_date"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.type !== ECouponType.PERCENT ||
+      (data.value !== undefined && data.value >= 0 && data.value <= 100),
+    {
+      message: "Giá trị phải nằm trong khoảng 0-100",
+      path: ["value"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.type !== ECouponType.AMOUNT ||
+      (data.value !== undefined && data.value >= 0),
+    {
+      message: "Giá trị phải lớn hơn hoặc bằng 0",
+      path: ["value"],
+    }
+  );
 
 export const formatDateStr = "dd/MM/yyyy";
