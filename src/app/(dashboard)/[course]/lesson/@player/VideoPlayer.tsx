@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import LessonNavigation from "../LessonNavigation";
 import useGlobalStore from "@/store";
 import { Button } from "@/components/ui/button";
+import RatingButton from "./RatingButton";
 // `/${course}/lesson?slug=${nextLesson?.slug}`
 const VideoPlayer = ({
   course,
@@ -62,9 +63,12 @@ const VideoPlayer = ({
           nextLesson={nextLesson}
           course={course}
         />
-        <Button onClick={() => setExpandedPlayer(!expandedPlayer)}>
-          {expandedPlayer ? "Mặc định" : "Mở rộng"}
-        </Button>
+        <div className="flex gap-5">
+          <RatingButton />
+          <Button onClick={() => setExpandedPlayer(!expandedPlayer)}>
+            {expandedPlayer ? "Mặc định" : "Mở rộng"}
+          </Button>
+        </div>
       </div>
     </>
   );

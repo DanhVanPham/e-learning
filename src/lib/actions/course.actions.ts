@@ -156,3 +156,35 @@ export async function getAllMyCourses(): Promise<StudyCoursesProps[]| undefined>
         console.log(error)
     }
 }
+
+export async function updateCourseView({slug}:{slug : string}) {
+    try {
+        connectToDatabase()
+        await Course.findOneAndUpdate({slug}, {
+            $inc: {views: 1}
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getCourseLessonDuration({slug}: {slug: string}): Promise<number | undefined> {
+    try {
+        connectToDatabase()
+        const course = await Course.findOne({slug}).select('lectures').populate({
+            path: 'lectures',
+            select: 'lessons',
+            populate: {
+                path: 'lessons',
+                select: 'duration'
+            }
+        })
+        const duration = course?.lectures?.reduce((result: number, lecture: any) => {
+            const totalDurationLess = lecture?.lessons?.reduce((result: number, lesson: any) => result + lesson?.duration|| 0, 0);
+            return result + totalDurationLess
+        }, 0) || 0
+        return duration
+    } catch (error) {
+        console.log(error);
+    }
+}

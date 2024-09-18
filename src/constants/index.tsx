@@ -8,7 +8,7 @@ import {
   IconStudy,
   IconCurrency,
 } from "@/components/icons";
-import type { TMenuItem } from "@/types";
+import type { TMenuItem, TRatingIcon } from "@/types";
 import {
   ECouponType,
   ECourseLevel,
@@ -259,3 +259,15 @@ export const couponFormSchema = z
   );
 
 export const formatDateStr = "dd/MM/yyyy";
+
+export const ratingList: {
+  title: TRatingIcon;
+  value: number;
+  icon: TRatingIcon;
+}[] = [
+  { title: "awesome", value: 5, icon: "awesome" },
+  { title: "good", value: 4, icon: "good" },
+  { title: "meh", value: 3, icon: "meh" },
+  { title: "bad", value: 2, icon: "bad" },
+  { title: "terrible", value: 1, icon: "terrible" },
+];

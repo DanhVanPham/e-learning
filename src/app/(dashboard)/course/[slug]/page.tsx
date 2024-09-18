@@ -1,5 +1,8 @@
 import PageNotFound from "@/app/not-found";
 import {
+  IconChart,
+  IconClock,
+  IconEye,
   IconPlay,
   IconStar,
   IconStarFill,
@@ -7,7 +10,12 @@ import {
   IconUsers,
 } from "@/components/icons";
 import { commonClassName, courseLevelTitle } from "@/constants";
-import { getAllMyCourses, getCourseBySlug } from "@/lib/actions/course.actions";
+import {
+  getAllMyCourses,
+  getCourseBySlug,
+  getCourseLessonDuration,
+  updateCourseView,
+} from "@/lib/actions/course.actions";
 import { ECourseStatus } from "@/types/enums";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -32,7 +40,7 @@ import { getUserInfo } from "@/lib/actions/user.actions";
 import ButtonEnroll from "./ButtonEnroll";
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, formatViewToK, parseMinutesToHours } from "@/lib/utils";
 import CourseWidget from "./CourseWidget";
 import AlreadyEnroll from "./AlreadyEnroll";
 
@@ -42,6 +50,9 @@ const page = async ({ params }: { params: { slug: string } }) => {
   });
 
   if (!data) return notFound();
+  await updateCourseView({ slug: params.slug });
+  const duration = await getCourseLessonDuration({ slug: params.slug });
+
   if (data.status !== ECourseStatus.APPROVED) return <PageNotFound />;
 
   const { userId } = auth();
@@ -50,6 +61,10 @@ const page = async ({ params }: { params: { slug: string } }) => {
   const videoId = data.intro_url?.split("v=")[1];
   const lectures = data.lectures;
 
+  const numLessons =
+    lectures?.reduce((result, currLec) => {
+      return result + currLec?.lessons?.length || 0;
+    }, 0) || 0;
   const alreadyBuyCourse =
     foundUser?.courses?.find(
       (courseId) => String(courseId) === String(data._id)
@@ -96,14 +111,18 @@ const page = async ({ params }: { params: { slug: string } }) => {
         </BoxSection>
         <BoxSection title="Thông tin">
           <div className="grid grid-cols-4 gap-5 ">
-            <BoxInfo title="Bài học">100</BoxInfo>
-            <BoxInfo title="Lượt xem">
-              {formatThousandSeperator(data.views)}
+            <BoxInfo title="Bài học" icon={<IconPlay className="size-4" />}>
+              {numLessons}
             </BoxInfo>
-            <BoxInfo title="Trình độ">
+            <BoxInfo title="Lượt xem" icon={<IconEye className="size-4" />}>
+              {formatViewToK(data.views)}
+            </BoxInfo>
+            <BoxInfo title="Trình độ" icon={<IconChart className="size-4" />}>
               {courseLevelTitle[data.level] || ""}
             </BoxInfo>
-            <BoxInfo title="Thời lượng">100h48ph</BoxInfo>
+            <BoxInfo title="Thời lượng" icon={<IconClock className="size-4" />}>
+              {parseMinutesToHours(duration || 0)}
+            </BoxInfo>
           </div>
         </BoxSection>
         <BoxSection title="Nội dung khóa học">
@@ -190,7 +209,11 @@ const page = async ({ params }: { params: { slug: string } }) => {
       </div>
       <div className="sticky top-5 right-0">
         {!alreadyBuyCourse && (
-          <CourseWidget course={data} foundUser={foundUser} />
+          <CourseWidget
+            course={data}
+            foundUser={foundUser}
+            duration={duration}
+          />
         )}
         {!!alreadyBuyCourse && <AlreadyEnroll user={foundUser} />}
       </div>
@@ -201,14 +224,19 @@ const page = async ({ params }: { params: { slug: string } }) => {
 function BoxInfo({
   title,
   children,
+  icon,
 }: {
   title: string;
   children: React.ReactNode;
+  icon?: React.ReactNode;
 }) {
   return (
     <div className="p-5 bg-white rounded-lg">
-      <h4 className="text-sm text-slate-400">{title}</h4>
-      <h3 className="font-bold">{children}</h3>
+      <h4 className="text-sm text-slate-400 font-medium">{title}</h4>
+      <div className="flex items-center gap-1 font-semibold text-sm">
+        {icon}
+        <span>{children}</span>
+      </div>
     </div>
   );
 }

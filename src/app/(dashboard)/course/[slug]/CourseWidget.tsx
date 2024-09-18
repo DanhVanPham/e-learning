@@ -14,13 +14,16 @@ import {
   getValidateCoupon,
 } from "@/lib/actions/coupon.actions";
 import { ECouponType } from "@/types/enums";
+import { parseMinutesToHours } from "@/lib/utils";
 
 const CourseWidget = ({
   course,
   foundUser,
+  duration,
 }: {
   course: TCourseUpdateParams;
   foundUser?: IUser | null;
+  duration?: number;
 }) => {
   const [applyCoupon, setApplyCoupon] = useState<TGetCouponResponse>();
   const [couponCode, setCouponCode] = useState<string>("");
@@ -84,7 +87,7 @@ const CourseWidget = ({
         <ul className="flex flex-col gap-2 mb-5 text-sm text-slate-500">
           <li className="flex items-center gap-2">
             <IconPlay className="size-4" />
-            <span>30h học</span>
+            <span>{parseMinutesToHours(duration || 0)} học</span>
           </li>
           <li className="flex items-center gap-2">
             <IconPlay className="size-4" />

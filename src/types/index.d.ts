@@ -174,3 +174,6 @@ export type TUpdateCouponParams = {
   updateData: Partial<ICoupon>,
   path?: string
 }
+
+// Rating
+export type TRatingIcon = 'awesome' | 'good' | 'meh' | 'bad' | 'terrible'

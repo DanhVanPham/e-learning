@@ -1,10 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IconClock, IconEye, IconStar } from "../icons";
 import { formatVndPrice } from "@/utils/helpers";
 import { StudyCoursesProps } from "@/types";
 import { commonClassName } from "@/constants";
+import { formatViewToK, parseMinutesToHours } from "@/lib/utils";
+import { getCourseLessonDuration } from "@/lib/actions/course.actions";
 
 const CourseItem = ({
   data,
@@ -15,9 +19,18 @@ const CourseItem = ({
   url?: string;
   cta?: string;
 }) => {
+  const [duration, setDuration] = useState(0);
+  useEffect(() => {
+    async function getDuration() {
+      const duration = await getCourseLessonDuration({ slug: data.slug });
+      setDuration(duration || 0);
+    }
+    getDuration();
+  }, [data.slug]);
+
   const courseInfo = [
     {
-      title: data?.views,
+      title: formatViewToK(data?.views),
       icon: (className?: string) => (
         <IconEye className={`size-4 ${className}`} />
       ),
@@ -29,7 +42,7 @@ const CourseItem = ({
       ),
     },
     {
-      title: "30h25ph",
+      title: parseMinutesToHours(duration || 0),
       icon: (className?: string) => (
         <IconClock className={`size-4 ${className}`} />
       ),
