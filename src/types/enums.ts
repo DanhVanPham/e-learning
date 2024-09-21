@@ -43,6 +43,11 @@ enum ERatingStatus {
   UNACTIVE = 'UNACTIVE',
 }
 
+enum ECouponStatus {
+  ACTIVE = 'ACTIVE',
+  UNACTIVE = 'UNACTIVE',
+}
+
 export { 
   EUserStatus, EUserRole, ECourseStatus,
   ECourseLevel, ELessonType, EOrderStatus, ECouponType, ERatingStatus 

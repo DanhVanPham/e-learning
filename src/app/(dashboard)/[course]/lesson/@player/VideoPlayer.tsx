@@ -9,13 +9,16 @@ import LessonNavigation from "../LessonNavigation";
 import useGlobalStore from "@/store";
 import { Button } from "@/components/ui/button";
 import RatingButton from "./RatingButton";
+import { TCourseUpdateParams } from "@/types";
 // `/${course}/lesson?slug=${nextLesson?.slug}`
 const VideoPlayer = ({
   course,
+  userId,
   prevLesson,
   nextLesson,
 }: {
-  course: string;
+  userId: string;
+  course: TCourseUpdateParams;
   prevLesson: ILesson | undefined;
   nextLesson: ILesson | undefined;
 }) => {
@@ -30,7 +33,7 @@ const VideoPlayer = ({
     if (!isEndedVideo || !nextLesson) return;
 
     const timer = setTimeout(() => {
-      router.push(`/${course}/lesson?slug=${nextLesson?.slug}`);
+      router.push(`/${course.slug}/lesson?slug=${nextLesson?.slug}`);
     }, duration);
 
     return () => clearTimeout(timer);
@@ -61,10 +64,10 @@ const VideoPlayer = ({
         <LessonNavigation
           prevLesson={prevLesson}
           nextLesson={nextLesson}
-          course={course}
+          course={course.slug}
         />
         <div className="flex gap-5">
-          <RatingButton />
+          <RatingButton courseId={course._id.toString()} userId={userId} />
           <Button onClick={() => setExpandedPlayer(!expandedPlayer)}>
             {expandedPlayer ? "Mặc định" : "Mở rộng"}
           </Button>

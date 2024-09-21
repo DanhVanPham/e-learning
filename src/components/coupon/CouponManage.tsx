@@ -24,6 +24,16 @@ import { ICoupon } from "@/database/coupon.model";
 import Swal from "sweetalert2";
 import { deleteCoupon } from "@/lib/actions/coupon.actions";
 import { toast } from "react-toastify";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { allValue } from "@/constants";
+import EmptyData from "../common/EmptyData";
 
 function CouponManage({
   coupons,
@@ -36,22 +46,7 @@ function CouponManage({
   page: number;
   search: string;
 }) {
-  const { createQueryString, router, pathname } = useQueryString();
-
-  const handleSearch = debounce((e: ChangeEvent<HTMLInputElement>) => {
-    router.push(`${pathname}?${createQueryString("search", e.target.value)}`);
-  }, 500);
-
-  const handleChangePage = (type: "prev" | "next") => {
-    if (type === "prev" && page === 1) return;
-    let currPage = Number(page);
-    if (type === "prev") currPage -= 1;
-    if (type === "next") currPage += 1;
-
-    router.push(
-      `${pathname}?${createQueryString("page", currPage.toString())}`
-    );
-  };
+  const { onChangePage, onSearch, onChangeQs } = useQueryString();
 
   const handleDeleteCoupon = (id: string): void => {
     Swal.fire({
@@ -94,12 +89,41 @@ function CouponManage({
       </Link>
       <div className="flex flex-col lg:flex-row lg:items-center gap-5 justify-between mb-10">
         <Heading>Quản lý mã giảm giá</Heading>
-        <div className="w-full lg:w-[300px]">
-          <Input
-            defaultValue={search || ""}
-            placeholder="Tìm kiếm coupon..."
-            onChange={(e) => handleSearch(e)}
-          />
+        <div className="flex gap-3">
+          <div className="w-full lg:w-[300px]">
+            <Input
+              defaultValue={search || ""}
+              placeholder="Tìm kiếm coupon..."
+              onChange={onSearch}
+            />
+          </div>
+          <Select
+            defaultValue={allValue}
+            onValueChange={(value) => onChangeQs("active", value)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Chọn trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value={allValue}>Tất cả</SelectItem>
+                {[
+                  {
+                    title: "Đang kích hoạt",
+                    value: 1,
+                  },
+                  {
+                    title: "Chưa kích hoạt",
+                    value: 0,
+                  },
+                ].map((opt) => (
+                  <SelectItem key={opt.title} value={`${opt.value}`}>
+                    {opt.title}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <Table className="table-responsive">
@@ -114,6 +138,7 @@ function CouponManage({
           </TableRow>
         </TableHeader>
         <TableBody>
+          {!coupons?.length && <EmptyData />}
           {!!coupons?.length &&
             coupons?.map((coupon) => {
               return (
@@ -139,7 +164,7 @@ function CouponManage({
                       <StatusBadge
                         item={{
                           className: "text-green-500 bg-green-500",
-                          title: "Đang hoạt động",
+                          title: "Đang kích hoạt",
                         }}
                       />
                     ) : (
@@ -171,8 +196,7 @@ function CouponManage({
       <Pagination
         currPage={page}
         totalPage={totalPages}
-        onChangePrev={() => handleChangePage("prev")}
-        onChangeNext={() => handleChangePage("next")}
+        onChangePage={onChangePage}
       />
     </div>
   );

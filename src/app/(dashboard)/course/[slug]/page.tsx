@@ -69,7 +69,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
     foundUser?.courses?.find(
       (courseId) => String(courseId) === String(data._id)
     ) ?? false;
-
+  const ratings = data.rating?.map((r: any) => r.content);
   return (
     <div className="grid lg:grid-cols-[2fr,1fr] gap-10 min-h-screen items-start">
       <div>
@@ -104,6 +104,16 @@ const page = async ({ params }: { params: { slug: string } }) => {
               className="object-cover w-full h-full rounded-lg"
             />
           )}
+        </div>
+        <div className="flex flex-wrap gap-2 mb-5">
+          {ratings?.map((rating, index) => (
+            <div
+              key={index}
+              className="rounded-full p-2 px-4 text-sm font-semibold text-white bg-gradient-to-tr from-primary to-secondary"
+            >
+              {rating}
+            </div>
+          ))}
         </div>
         <h1 className="mb-5 text-3xl font-bold">{data.title}</h1>
         <BoxSection title="Mô tả">

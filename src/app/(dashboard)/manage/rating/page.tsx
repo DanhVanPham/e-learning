@@ -1,7 +1,7 @@
-import OrderManage from "@/components/order/OrderManage";
+import RatingManage from "@/components/rating/RatingManage";
 import { ITEMS_PER_PAGE } from "@/constants";
-import { getAllOrder } from "@/lib/actions/order.actions";
-import { EOrderStatus } from "@/types/enums";
+import { getRatings } from "@/lib/actions/rating.actions";
+import { ERatingStatus } from "@/types/enums";
 import React from "react";
 
 const page = async ({
@@ -10,26 +10,27 @@ const page = async ({
   searchParams: {
     page: number;
     search: string;
-    status: EOrderStatus;
+    status: ERatingStatus;
   };
 }) => {
   const { page, search, status } = searchParams;
 
-  const paginationData = await getAllOrder({
+  const paginationData = await getRatings({
     page,
     limit: ITEMS_PER_PAGE,
-    search: search || "",
+    search: search,
     status: status,
   });
+
   const currPage = Number(page) || 1;
 
   return (
-    <OrderManage
-      search={search}
+    <RatingManage
       page={currPage}
       totalPages={paginationData?.totalPages}
       status={status}
-      orders={paginationData?.items}
+      search={search}
+      ratings={paginationData?.items}
     />
   );
 };

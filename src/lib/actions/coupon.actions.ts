@@ -7,6 +7,7 @@ import { TCreateCouponParams, TGetAllCouponParams, TGetCouponResponse, TUpdateCo
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import Course from "@/database/course.model";
+import { isNil } from "lodash";
 
 export async function createCoupon(params: TCreateCouponParams) {
     try {
@@ -38,10 +39,12 @@ export async function getAllCoupons(params: TGetAllCouponParams): Promise<{
             page = 1,
             limit = 10,
             search,
+            active,
         } = params;
         const skip = (page - 1) * limit;
         const query: FilterQuery<typeof Coupon> = {}
-
+console.log(!isNil(active), active)
+        if(!isNil(active)) query.active = Number(active) === 1;
         if(search) {
             query.$or = [{title: {$regex: search, $options: 'i'}}]
         }

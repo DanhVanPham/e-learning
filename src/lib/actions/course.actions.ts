@@ -10,7 +10,8 @@ import { auth } from "@clerk/nextjs/server";
 import User from "@/database/user.model";
 import { parseMongoDocToPlainObject } from "@/utils/helpers";
 import { FilterQuery } from "mongoose";
-import { ECourseStatus } from "@/types/enums";
+import { ECourseStatus, ERatingStatus } from "@/types/enums";
+import Rating from "@/database/rating.model";
 
 export async function getAllCoursesPublic(): Promise<StudyCoursesProps[] | undefined> {
     try {
@@ -43,6 +44,12 @@ export async function getCourseBySlug({slug}: {slug: string}): Promise<TCourseUp
                     _destroy: false
                 },
             }
+        }).populate({
+            path: 'rating',
+            model: Rating,
+            match: {
+                status: ERatingStatus.ACTIVE
+            },
         })
         return parseMongoDocToPlainObject(foundCourse)
     } catch (error) {

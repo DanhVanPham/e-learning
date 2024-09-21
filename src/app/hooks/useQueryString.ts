@@ -1,22 +1,48 @@
 'use client'
 
+import { allValue } from "@/constants";
+import { debounce } from "lodash";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { ChangeEvent, useCallback } from "react";
 
 export default function useQueryString() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-    const createQueryString = useCallback(
-        (name: string, value: string) => {
-          const params = new URLSearchParams(searchParams.toString());
-          params.set(name, value);
-    
-          return params.toString();
-        },
-        [searchParams]
-      );
+  const createQueryString =  (name: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(name, value);
+    if(!value || value === allValue) params.delete(name) 
 
-    return { createQueryString, router, pathname }
+    // Reset the 'page' param if the updated param is not 'page'
+    if (name !== 'page') {
+      params.delete('page'); // Remove 'page' parameter when a different parameter is updated
+    }
+    router.push(`${pathname}?${params}`)
+  }
+
+  const handleSearch = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    createQueryString("search", e.target.value);
+  }, 500);
+
+  const changeFilterStatus = <TStatus extends string>(status: TStatus) => {
+    createQueryString("status", status);
+  }
+
+  const handleChangePage = (page: number) => {
+    createQueryString("page", Number(page).toString());
+  };
+
+  const handleChangeQs = (key: string, value: string) => {
+    createQueryString(key, value)
+  }
+
+  return { createQueryString, 
+    router, pathname, 
+    onSearch: handleSearch,
+    onChangeFilterStatus: changeFilterStatus,
+    onChangePage: handleChangePage,
+    onChangeQs: handleChangeQs
+  }
 }

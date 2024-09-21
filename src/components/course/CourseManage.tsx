@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import Heading from "../common/Heading";
 import Image from "next/image";
-import { courseStatus } from "@/constants";
+import { allValue, courseStatus } from "@/constants";
 import Link from "next/link";
 import { ICourse } from "@/database/course.model";
 import Swal from "sweetalert2";
@@ -34,6 +34,7 @@ import useQueryString from "@/app/hooks/useQueryString";
 import TableActions from "../common/TableActions";
 import TableActionItem from "../common/TableActionItem";
 import Pagination from "../common/Pagination";
+import EmptyData from "../common/EmptyData";
 
 function CourseManage({
   courses,
@@ -48,7 +49,7 @@ function CourseManage({
   search: string;
   status: ECourseStatus;
 }) {
-  const { createQueryString, router, pathname } = useQueryString();
+  const { onSearch, onChangeFilterStatus, onChangePage } = useQueryString();
 
   const handleDeleteCourse = (slug: string) => {
     Swal.fire({
@@ -95,28 +96,9 @@ function CourseManage({
           path: "/manage/course",
         });
         toast.success("Cập nhật trạng thái thành công");
-        router.push(`${pathname}?${createQueryString("status", "")}`);
+        onChangeFilterStatus("");
       }
     });
-  };
-
-  const handleSearchCourse = debounce((e: ChangeEvent<HTMLInputElement>) => {
-    router.push(`${pathname}?${createQueryString("search", e.target.value)}`);
-  }, 500);
-
-  const changeFilterStatus = (value: string) => {
-    router.push(`${pathname}?${createQueryString("status", value)}`);
-  };
-
-  const handleChangePage = (type: "prev" | "next") => {
-    if (type === "prev" && page === 1) return;
-    let currPage = Number(page);
-    if (type === "prev") currPage -= 1;
-    if (type === "next") currPage += 1;
-
-    router.push(
-      `${pathname}?${createQueryString("page", currPage.toString())}`
-    );
   };
 
   return (
@@ -147,18 +129,21 @@ function CourseManage({
             <Input
               defaultValue={search || ""}
               placeholder="Tìm kiếm khóa học..."
-              onChange={(e) => handleSearchCourse(e)}
+              onChange={onSearch}
             />
           </div>
           <Select
-            defaultValue={status || ""}
-            onValueChange={changeFilterStatus}
+            defaultValue={status || allValue}
+            onValueChange={(value) =>
+              onChangeFilterStatus<ECourseStatus | string>(value)
+            }
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Chọn trạng thái" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
+                <SelectItem value={allValue}>Tất cả</SelectItem>
                 {courseStatus.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.title}
@@ -179,6 +164,7 @@ function CourseManage({
           </TableRow>
         </TableHeader>
         <TableBody>
+          {!courses?.length && <EmptyData />}
           {!!courses?.length &&
             courses?.map((course) => {
               const foundCourseStatus = courseStatus.find(
@@ -251,8 +237,7 @@ function CourseManage({
       <Pagination
         currPage={page}
         totalPage={totalPages}
-        onChangePrev={() => handleChangePage("prev")}
-        onChangeNext={() => handleChangePage("next")}
+        onChangePage={onChangePage}
       />
     </div>
   );

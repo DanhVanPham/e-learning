@@ -1,33 +1,64 @@
 import { commonClassName } from "@/constants";
-import React from "react";
-import { IconArrowLeft, IconArrowRight } from "../icons";
+import React, { ChangeEvent } from "react";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconDoubleArrowLeft,
+  IconDoubleArrowRight,
+} from "../icons";
+import { debounce } from "lodash";
 
-const Pagination = ({
-  currPage,
-  totalPage,
-  onChangePrev,
-  onChangeNext,
-}: {
+interface PaginationProps {
   currPage: number;
   totalPage: number;
-  onChangePrev: () => void;
-  onChangeNext: () => void;
-}) => {
+  onChangePage: (page: number) => void;
+}
+
+const Pagination = ({ currPage, totalPage, onChangePage }: PaginationProps) => {
+  const pageNum = Number(currPage);
+
+  const handleInputChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (value < 1 || value > totalPage) return;
+    onChangePage(value);
+  }, 250);
+
   return (
-    <div className="flex justify-end gap-3 mt-5">
+    <div className="mt-10 flex items-center justify-center gap-3">
       <button
         className={commonClassName.paginationButton}
         disabled={currPage <= 1}
-        onClick={() => onChangePrev()}
+        onClick={() => onChangePage(1)}
       >
-        <IconArrowLeft />
+        <IconDoubleArrowLeft className="size-4" />
+      </button>
+      <button
+        className={commonClassName.paginationButton}
+        disabled={currPage <= 1}
+        onClick={() => onChangePage(pageNum - 1)}
+      >
+        <IconArrowLeft className="size-4" />
+      </button>
+      <input
+        type="number"
+        placeholder="1"
+        defaultValue={currPage || 1}
+        className="w-20 h-10 rounded-full outline-none text-center px-2 font-medium"
+        onChange={handleInputChange}
+      />
+      <button
+        className={commonClassName.paginationButton}
+        disabled={currPage >= totalPage}
+        onClick={() => onChangePage(pageNum + 1)}
+      >
+        <IconArrowRight className="size-4" />
       </button>
       <button
         className={commonClassName.paginationButton}
         disabled={currPage >= totalPage}
-        onClick={() => onChangeNext()}
+        onClick={() => onChangePage(Number(totalPage))}
       >
-        <IconArrowRight />
+        <IconDoubleArrowRight className="size-4" />
       </button>
     </div>
   );

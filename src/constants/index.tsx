@@ -7,6 +7,7 @@ import {
   IconUsers,
   IconStudy,
   IconCurrency,
+  IconStar,
 } from "@/components/icons";
 import type { TMenuItem, TRatingIcon } from "@/types";
 import {
@@ -14,6 +15,7 @@ import {
   ECourseLevel,
   ECourseStatus,
   EOrderStatus,
+  ERatingStatus,
 } from "@/types/enums";
 import { z } from "zod";
 
@@ -47,6 +49,11 @@ export const menuItems: TMenuItem[] = [
     title: "Quản lý coupon",
     url: "/manage/coupon",
     icon: <IconCurrency className="size-5" />,
+  },
+  {
+    title: "Quản lý đánh giá",
+    url: "/manage/rating",
+    icon: <IconStar className="size-5" />,
   },
   {
     title: "Quản lý bình luận",
@@ -149,13 +156,35 @@ export const couponTypes: {
   },
 ];
 
+export const ratingStatusTitle: Record<ERatingStatus, string> = {
+  [ERatingStatus.UNACTIVE]: "Chưa duyệt",
+  [ERatingStatus.ACTIVE]: "Đã duyệt",
+};
+
+export const ratingStatus: {
+  title: string;
+  value: ERatingStatus;
+  className?: string;
+}[] = [
+  {
+    title: ratingStatusTitle[ERatingStatus.UNACTIVE],
+    value: ERatingStatus.UNACTIVE,
+    className: "text-orange-500 bg-orange-500",
+  },
+  {
+    title: ratingStatusTitle[ERatingStatus.ACTIVE],
+    value: ERatingStatus.ACTIVE,
+    className: "text-green-500 bg-green-500",
+  },
+];
+
 export const commonClassName = {
   status:
     "bg-opacity-10 bg-current border border-current rounded-md font-medium text-sm px-3 py-1 whitespace-nowrap",
   action:
     "size-8 rounded-md border flex items-center justify-center p-2  text-gray-500 hover:border-opacity-80 dark:bg-transparent borderDarkMode dark:hover:border-opacity-20",
   paginationButton:
-    "size-10 rounded-md border borderDarkMode bgDarkMode flex items-center justify-center hover:border-primary hover:text-primary transition-all  p-2.5 disabled:text-gray-300 disabled:pointer-events-none",
+    "size-10 flex justify-center items-center rounded-full bg-white bgDarkMode border borderDarkMode  hover:border-primary hover:text-primary transition-all disabled:text-gray-300 disabled:pointer-events-none ",
   btnPrimary:
     "w-full flex items-center justify-center rounded-lg text-white font-semibold bg-primary h-12 button-primary",
 };
@@ -271,3 +300,7 @@ export const ratingList: {
   { title: "bad", value: 2, icon: "bad" },
   { title: "terrible", value: 1, icon: "terrible" },
 ];
+
+export const allValue = "ALL";
+
+export const ITEMS_PER_PAGE = 5;

@@ -1,7 +1,6 @@
 import CouponManage from "@/components/coupon/CouponManage";
-import OrderManage from "@/components/order/OrderManage";
+import { ITEMS_PER_PAGE } from "@/constants";
 import { getAllCoupons } from "@/lib/actions/coupon.actions";
-import { getAllOrder } from "@/lib/actions/order.actions";
 import React from "react";
 
 const page = async ({
@@ -10,20 +9,24 @@ const page = async ({
   searchParams: {
     page: number;
     search: string;
+    active: string;
   };
 }) => {
-  const { page, search } = searchParams;
+  const { page, search, active } = searchParams;
 
   const paginationData = await getAllCoupons({
     page,
-    limit: 5,
+    limit: ITEMS_PER_PAGE,
     search: search || "",
+    active,
   });
+
+  const currPage = Number(page) || 1;
 
   return (
     <CouponManage
       search={search}
-      page={page}
+      page={currPage}
       totalPages={paginationData?.totalPages}
       coupons={paginationData?.items}
     />

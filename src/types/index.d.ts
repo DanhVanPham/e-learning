@@ -2,10 +2,11 @@ import { ICourse } from '@/database/course.model'
 import { ILecture } from '@/database/lecture.model'
 import { ILesson } from '@/database/lesson.model'
 import { PropsWithChildren } from 'react'
-import { ECouponType, ECourseStatus, EOrderStatus } from './enums'
+import { ECouponType, ECourseStatus, EOrderStatus, ERatingStatus } from './enums'
 import { IOrder } from '@/database/order.model'
 import { IUser } from '@/database/user.model'
 import { ICoupon } from '@/database/coupon.model'
+import { IRating } from '@/database/rating.model'
 
 export type TActiveLink = {
   url: string
@@ -163,6 +164,7 @@ export type TGetAllCouponParams = {
   page?: number,
   limit?: number,
   search?: string,
+  active?: string
 }
 
 export type TGetCouponResponse = Omit<ICoupon, 'courses'> & {
@@ -177,3 +179,28 @@ export type TUpdateCouponParams = {
 
 // Rating
 export type TRatingIcon = 'awesome' | 'good' | 'meh' | 'bad' | 'terrible'
+
+export type TCreateRatingParams = {
+  rate: number
+  content: string
+  user: string
+  course: string
+}
+
+export type TGetAllRatingParams = {
+  page: number,
+  limit: number,
+  search: string,
+  status?: ERatingStatus
+}
+
+export type TGetAllRatingResponse = Omit<IRating, 'course', 'user', > & {
+  course: ICourse,
+  user: IUser,
+}
+
+export type TUpdateRatingParams = {
+  id: string
+  updateData: Partial<IRating>,
+  path?: string
+}

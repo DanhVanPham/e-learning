@@ -36,7 +36,7 @@ const CourseItem = ({
       ),
     },
     {
-      title: data?.rating?.[0],
+      title: 5,
       icon: (className?: string) => (
         <IconStar className={`size-4 ${className}`} />
       ),

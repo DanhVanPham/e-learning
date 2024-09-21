@@ -6,6 +6,8 @@ export { default as IconUsers } from "./IconUsers";
 export { default as IconOrder } from "./IconOrder";
 export { default as IconArrowLeft } from "./IconArrowLeft";
 export { default as IconArrowRight } from "./IconArrowRight";
+export { default as IconDoubleArrowLeft } from "./IconDoubleArrowLeft";
+export { default as IconDoubleArrowRight } from "./IconDoubleArrowRight";
 export { default as IconStar } from "./IconStar";
 export { default as IconStarFill } from "./IconStarFill";
 export { default as IconEye } from "./IconEye";

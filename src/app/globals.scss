@@ -142,6 +142,10 @@
   animation: width 5s linear 1;
 }
 
+button:disabled {
+  @apply cursor-not-allowed
+}
+
 @keyframes width {
   from {
     width: 100%;

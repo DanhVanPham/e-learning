@@ -67,7 +67,8 @@ const page = async ({
             className="w-full h-full object-fill"
           ></iframe> */}
         <VideoPlayer
-          course={findCourse.slug}
+          course={findCourse}
+          userId={foundUser._id.toString()}
           prevLesson={prevLesson}
           nextLesson={nextLesson}
         />

@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Heading from "../common/Heading";
-import { orderStatus } from "@/constants";
+import { allValue, orderStatus } from "@/constants";
 import { cn } from "@/lib/utils";
 import Swal from "sweetalert2";
 import { EOrderStatus } from "@/types/enums";
@@ -33,6 +33,7 @@ import useQueryString from "@/app/hooks/useQueryString";
 import TableActions from "../common/TableActions";
 import TableActionItem from "../common/TableActionItem";
 import Pagination from "../common/Pagination";
+import EmptyData from "../common/EmptyData";
 
 function OrderManage({
   orders,
@@ -47,26 +48,7 @@ function OrderManage({
   search: string;
   status: EOrderStatus;
 }) {
-  const { createQueryString, router, pathname } = useQueryString();
-
-  const handleSearchCourse = debounce((e: ChangeEvent<HTMLInputElement>) => {
-    router.push(`${pathname}?${createQueryString("search", e.target.value)}`);
-  }, 500);
-
-  const changeFilterStatus = (value: string) => {
-    router.push(`${pathname}?${createQueryString("status", value)}`);
-  };
-
-  const handleChangePage = (type: "prev" | "next") => {
-    if (type === "prev" && page === 1) return;
-    let currPage = Number(page);
-    if (type === "prev") currPage -= 1;
-    if (type === "next") currPage += 1;
-
-    router.push(
-      `${pathname}?${createQueryString("page", currPage.toString())}`
-    );
-  };
+  const { onSearch, onChangeFilterStatus, onChangePage } = useQueryString();
 
   const handleChangeStatus = async (orderId: string, status: EOrderStatus) => {
     const isCanceling = status === EOrderStatus.CANCELED;
@@ -89,7 +71,7 @@ function OrderManage({
           if (res?.success) {
             toast.success("Cập nhật đơn hàng thành công");
           }
-          router.push(`${pathname}?${createQueryString("status", "")}`);
+          onChangeFilterStatus("");
         } catch (error) {}
       }
     });
@@ -104,18 +86,21 @@ function OrderManage({
             <Input
               defaultValue={search || ""}
               placeholder="Tìm kiếm đơn hàng..."
-              onChange={(e) => handleSearchCourse(e)}
+              onChange={onSearch}
             />
           </div>
           <Select
-            defaultValue={status || ""}
-            onValueChange={changeFilterStatus}
+            defaultValue={status || allValue}
+            onValueChange={(value) =>
+              onChangeFilterStatus<EOrderStatus | string>(value)
+            }
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Chọn trạng thái" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
+                <SelectItem value={allValue}>Tất cả</SelectItem>
                 {orderStatus.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.title}
@@ -139,6 +124,7 @@ function OrderManage({
           </TableRow>
         </TableHeader>
         <TableBody>
+          {!orders?.length && <EmptyData />}
           {!!orders?.length &&
             orders?.map((order) => {
               const foundOrderStatus = orderStatus.find(
@@ -209,8 +195,7 @@ function OrderManage({
       <Pagination
         currPage={page}
         totalPage={totalPages}
-        onChangePrev={() => handleChangePage("prev")}
-        onChangeNext={() => handleChangePage("next")}
+        onChangePage={onChangePage}
       />
     </div>
   );
