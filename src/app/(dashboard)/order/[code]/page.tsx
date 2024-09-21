@@ -7,7 +7,7 @@ const OrderDetails = async ({ params }: { params: { code: string } }) => {
   const code = params.code;
 
   const orderDetails = await getOrderDetails({ code });
-  console.log(orderDetails);
+
   if (!orderDetails) return <PageNotFound />;
 
   return (

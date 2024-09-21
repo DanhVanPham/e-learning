@@ -122,7 +122,7 @@ const CouponAddNew = ({ user }: { user?: IUser }) => {
       );
     }
   };
-  console.log(form.watch("value"));
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">

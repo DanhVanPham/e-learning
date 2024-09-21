@@ -43,7 +43,7 @@ export async function getAllCoupons(params: TGetAllCouponParams): Promise<{
         } = params;
         const skip = (page - 1) * limit;
         const query: FilterQuery<typeof Coupon> = {}
-console.log(!isNil(active), active)
+
         if(!isNil(active)) query.active = Number(active) === 1;
         if(search) {
             query.$or = [{title: {$regex: search, $options: 'i'}}]

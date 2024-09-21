@@ -45,7 +45,7 @@ const CourseWidget = ({
         toast.error("Mã giảm giá không hợp lệ");
         return;
       }
-      console.log(foundCoupon);
+
       setApplyCoupon(foundCoupon);
       toast.success("Áp dụng mã giảm giá thành công");
     } catch (error) {

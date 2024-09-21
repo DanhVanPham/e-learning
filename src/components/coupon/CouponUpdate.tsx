@@ -130,7 +130,7 @@ const CouponUpdate = ({ coupon }: { coupon?: TGetCouponResponse }) => {
       );
     }
   };
-  console.log(form.watch("value"));
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
