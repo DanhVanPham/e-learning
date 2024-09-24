@@ -11,6 +11,7 @@ import {
 } from "@/components/icons";
 import type { TMenuItem, TRatingIcon } from "@/types";
 import {
+  ECommentStatus,
   ECouponType,
   ECourseLevel,
   ECourseStatus,
@@ -174,6 +175,28 @@ export const ratingStatus: {
   {
     title: ratingStatusTitle[ERatingStatus.ACTIVE],
     value: ERatingStatus.ACTIVE,
+    className: "text-green-500 bg-green-500",
+  },
+];
+
+export const commentStatusTitle: Record<ECommentStatus, string> = {
+  [ECommentStatus.PENDING]: "Chờ duyệt",
+  [ECommentStatus.APPROVED]: "Đã duyệt",
+};
+
+export const commentStatus: {
+  title: string;
+  value: ECommentStatus;
+  className?: string;
+}[] = [
+  {
+    title: courseStatusTitle[ECommentStatus.PENDING],
+    value: ECommentStatus.PENDING,
+    className: "text-orange-500 bg-orange-500",
+  },
+  {
+    title: courseStatusTitle[ECommentStatus.APPROVED],
+    value: ECommentStatus.APPROVED,
     className: "text-green-500 bg-green-500",
   },
 ];

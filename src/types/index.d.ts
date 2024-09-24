@@ -2,11 +2,12 @@ import { ICourse } from '@/database/course.model'
 import { ILecture } from '@/database/lecture.model'
 import { ILesson } from '@/database/lesson.model'
 import { PropsWithChildren } from 'react'
-import { ECouponType, ECourseStatus, EOrderStatus, ERatingStatus } from './enums'
+import { ECommentStatus, ECouponType, ECourseStatus, EOrderStatus, ERatingStatus } from './enums'
 import { IOrder } from '@/database/order.model'
 import { IUser } from '@/database/user.model'
 import { ICoupon } from '@/database/coupon.model'
 import { IRating } from '@/database/rating.model'
+import { IComment } from '@/database/comment.model'
 
 export type TActiveLink = {
   url: string
@@ -202,5 +203,51 @@ export type TGetAllRatingResponse = Omit<IRating, 'course', 'user', > & {
 export type TUpdateRatingParams = {
   id: string
   updateData: Partial<IRating>,
+  path?: string
+}
+
+// Comment
+export type TCreateCommentParams = {
+  content: string
+  lesson: string
+  user: string
+}
+
+export type TGetCommentItem = Omit<IComment, 'user'> & {
+  user: {
+    _id: string,
+    name: string,
+    username: string,
+    avatar: string
+  }
+}
+
+export type TCommentItemManage = Omit<IComment, 'user', 'lesson'> & {
+  user: {
+    _id: string,
+    name: string,
+    username: string,
+    avatar: string
+  },
+  lesson: {
+    course: {
+      _id: string,
+      slug: string,
+      title: string,
+      image?: string
+    }
+  }
+}
+
+export type TGetAllCommentParams = {
+  page: number,
+  limit: number,
+  search: string,
+  status?: ECommentStatus
+}
+
+export type TUpdateCommentParams = {
+  id: string
+  updateData: Partial<IComment>,
   path?: string
 }

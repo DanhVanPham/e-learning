@@ -10,9 +10,11 @@ import LessonWrapper from "./LessonWrapper";
 const Layout = async ({
   player,
   outline,
+  comment,
 }: {
   player: React.ReactNode;
   outline: React.ReactNode;
+  comment: React.ReactNode;
 }) => {
   const { userId } = auth();
   if (!userId) return <PageNotFound />;
@@ -24,6 +26,7 @@ const Layout = async ({
     <LessonWrapper>
       <Suspense fallback={<LoadingPlayer />}>{player}</Suspense>
       <Suspense fallback={<LoadingOutline />}>{outline}</Suspense>
+      <Suspense fallback={<LoadingOutline />}>{comment}</Suspense>
     </LessonWrapper>
   );
 };
