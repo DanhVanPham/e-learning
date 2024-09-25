@@ -30,6 +30,10 @@ export default function useQueryString() {
     createQueryString("status", status);
   }
 
+  const changeFilterRole = <TRole extends string>(role: TRole) => {
+    createQueryString("role", role);
+  }
+
   const handleChangePage = (page: number) => {
     createQueryString("page", Number(page).toString());
   };
@@ -42,6 +46,7 @@ export default function useQueryString() {
     router, pathname, 
     onSearch: handleSearch,
     onChangeFilterStatus: changeFilterStatus,
+    onChangeFilterRole: changeFilterRole,
     onChangePage: handleChangePage,
     onChangeQs: handleChangeQs
   }

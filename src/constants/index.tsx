@@ -17,6 +17,8 @@ import {
   ECourseStatus,
   EOrderStatus,
   ERatingStatus,
+  EUserRole,
+  EUserStatus,
 } from "@/types/enums";
 import { z } from "zod";
 
@@ -35,31 +37,37 @@ export const menuItems: TMenuItem[] = [
     title: "Quản lý khóa học",
     url: "/manage/course",
     icon: <IconPlay className="size-5" />,
+    role: [EUserRole.ADMIN, EUserRole.EXPERT],
   },
   {
     title: "Quản lý thành viên",
     url: "/manage/member",
     icon: <IconUsers className="size-5" />,
+    role: [EUserRole.ADMIN],
   },
   {
     title: "Quản lý đơn hàng",
     url: "/manage/order",
     icon: <IconOrder className="size-5" />,
+    role: [EUserRole.ADMIN],
   },
   {
     title: "Quản lý coupon",
     url: "/manage/coupon",
     icon: <IconCurrency className="size-5" />,
+    role: [EUserRole.ADMIN],
   },
   {
     title: "Quản lý đánh giá",
     url: "/manage/rating",
     icon: <IconStar className="size-5" />,
+    role: [EUserRole.ADMIN],
   },
   {
     title: "Quản lý bình luận",
     url: "/manage/comment",
     icon: <IconComment className="size-5" />,
+    role: [EUserRole.ADMIN],
   },
 ];
 
@@ -96,6 +104,59 @@ export const orderStatusTitle: Record<EOrderStatus, string> = {
   [EOrderStatus.COMPLETED]: "Hoàn thành",
   [EOrderStatus.CANCELED]: "Đã hủy",
 };
+
+// User
+export const userStatusTile: Record<EUserStatus, string> = {
+  [EUserStatus.UNACTIVE]: "Chưa hoạt động",
+  [EUserStatus.ACTIVE]: "Đang hoạt động",
+  [EUserStatus.BANNED]: "Bị chặn",
+};
+
+export const userStatus: {
+  title: string;
+  value: EUserStatus;
+  className?: string;
+}[] = [
+  {
+    title: userStatusTile[EUserStatus.UNACTIVE],
+    value: EUserStatus.UNACTIVE,
+    className: "text-orange-500 bg-orange-500",
+  },
+  {
+    title: userStatusTile[EUserStatus.ACTIVE],
+    value: EUserStatus.ACTIVE,
+    className: "text-green-500 bg-green-500",
+  },
+  {
+    title: userStatusTile[EUserStatus.BANNED],
+    value: EUserStatus.BANNED,
+    className: "text-red-500 bg-red-500",
+  },
+];
+
+export const userRoleTile: Record<EUserRole, string> = {
+  [EUserRole.USER]: "Người dùng",
+  [EUserRole.EXPERT]: "Chuyên gia",
+  [EUserRole.ADMIN]: "Quản trị viên",
+};
+
+export const userRole: {
+  title: string;
+  value: EUserRole;
+}[] = [
+  {
+    title: userRoleTile[EUserRole.USER],
+    value: EUserRole.USER,
+  },
+  {
+    title: userRoleTile[EUserRole.EXPERT],
+    value: EUserRole.EXPERT,
+  },
+  {
+    title: userRoleTile[EUserRole.ADMIN],
+    value: EUserRole.ADMIN,
+  },
+];
 
 export const orderStatus: {
   title: string;

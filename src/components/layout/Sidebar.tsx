@@ -1,12 +1,11 @@
 import React from "react";
-import { menuItems } from "@/constants";
 import { ActiveLink, ModeToggle } from "../common";
 import type { TMenuItem } from "@/types";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { IconUsers } from "../icons";
 
-const Sidebar = () => {
+const Sidebar = ({ menuItems }: { menuItems: TMenuItem[] }) => {
   return (
     <aside className="fixed top-0 bottom-0 left-0 flex-col hidden p-5 border borderDarkMode bgDarkMode lg:flex w-[300px]">
       <a href="/" className="inline-block mb-5 text-3xl font-bold">

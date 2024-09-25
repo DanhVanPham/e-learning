@@ -2,7 +2,7 @@ import { ICourse } from '@/database/course.model'
 import { ILecture } from '@/database/lecture.model'
 import { ILesson } from '@/database/lesson.model'
 import { PropsWithChildren } from 'react'
-import { ECommentStatus, ECouponType, ECourseStatus, EOrderStatus, ERatingStatus } from './enums'
+import { ECommentStatus, ECouponType, ECourseStatus, EOrderStatus, ERatingStatus, EUserRole, EUserStatus } from './enums'
 import { IOrder } from '@/database/order.model'
 import { IUser } from '@/database/user.model'
 import { ICoupon } from '@/database/coupon.model'
@@ -16,6 +16,7 @@ export type TActiveLink = {
 export type TMenuItem = {
   url: string
   title: string
+  role?: EUserRole[]
   icon: React.ReactNode
   onlyIcon?: boolean
 }
@@ -27,6 +28,20 @@ export type TCreateUserParams = {
   email: string
   name?: string
   avatar?: string
+}
+
+export type TGetAllUserParams = {
+  page: number,
+  limit: number,
+  search: string,
+  role?: EUserRole,
+  status?: EUserStatus
+}
+
+export type TUpdateUserParams = {
+  id: string
+  updateData: Partial<IUser>,
+  path?: string
 }
 
 // Course
