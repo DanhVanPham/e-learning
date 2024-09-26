@@ -8,6 +8,7 @@ export interface IUser extends Document {
   username: string
   email: string
   avatar: string
+  bio?: string
   courses: Schema.Types.ObjectId[]
   status: EUserStatus
   role: EUserRole
@@ -32,6 +33,9 @@ const userSchema = new Schema<IUser>({
     required: true,
   },
   avatar: {
+    type: String,
+  },
+  bio: {
     type: String,
   },
   courses: [

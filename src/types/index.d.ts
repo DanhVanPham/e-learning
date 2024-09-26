@@ -28,6 +28,7 @@ export type TCreateUserParams = {
   email: string
   name?: string
   avatar?: string
+  bio?: string
 }
 
 export type TGetAllUserParams = {

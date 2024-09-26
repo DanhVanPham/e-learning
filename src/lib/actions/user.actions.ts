@@ -78,7 +78,6 @@ export async function getUsers(params: TGetAllUserParams): Promise<{
   }
 }
 
-
 export async function updateUser(params: TUpdateUserParams) {
   try {
       connectToDatabase();
