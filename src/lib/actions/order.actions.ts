@@ -21,7 +21,6 @@ export async function createOrder(params: TCreateOrderParams) {
             })
         }
         const newOrder = await Order.create(params)
-        console.log(newOrder)
         return parseMongoDocToPlainObject(newOrder)
     } catch (error) {
         console.log(error)

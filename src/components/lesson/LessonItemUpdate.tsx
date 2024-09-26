@@ -47,7 +47,6 @@ const LessonItemUpdate = ({ lesson }: { lesson: ILesson }) => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     try {
       const bodyData: TUpdateLessonParams = {
         lessonId: lesson._id,

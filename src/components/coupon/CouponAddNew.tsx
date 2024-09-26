@@ -60,7 +60,6 @@ const CouponAddNew = ({ user }: { user?: IUser }) => {
 
   async function onSubmit(values: z.infer<typeof couponFormSchema>) {
     setIsSubmitting(true);
-    console.log(values);
     const {
       title,
       code,

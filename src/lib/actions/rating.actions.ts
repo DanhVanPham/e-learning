@@ -20,7 +20,6 @@ export async function createRating(params: TCreateRatingParams): Promise<IRating
             model: Rating
         });
         const newRating = await Rating.create(params);
-        console.log(findCourse)
         if(findCourse) {
             findCourse.rating.push(newRating._id);
             await findCourse.save()

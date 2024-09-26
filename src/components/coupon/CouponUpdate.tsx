@@ -63,7 +63,6 @@ const CouponUpdate = ({ coupon }: { coupon?: TGetCouponResponse }) => {
 
   async function onSubmit(values: z.infer<typeof couponFormSchema>) {
     setIsSubmitting(true);
-    console.log(values);
     const {
       title,
       code,
