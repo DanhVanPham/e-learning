@@ -118,7 +118,7 @@ function RatingManage({
             />
           </div>
           <Select
-            defaultValue={status || allValue}
+            value={status || allValue}
             onValueChange={(value) =>
               onChangeFilterStatus<ECommentStatus | string>(value)
             }

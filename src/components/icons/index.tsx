@@ -20,3 +20,4 @@ export { default as IconCheck } from "./IconCheck";
 export { default as IconCurrency } from "./IconCurrency";
 export { default as IconClose } from "./IconClose";
 export { default as IconChart } from "./IconChart";
+export { default as IconSend } from "./IconSend";

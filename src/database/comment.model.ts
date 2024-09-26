@@ -7,6 +7,7 @@ export interface IComment extends Document {
     lesson: Schema.Types.ObjectId
     user: Schema.Types.ObjectId
     status:ECommentStatus;
+    parentId?: Schema.Types.ObjectId;
     created_at: Date;
 }
 
@@ -23,6 +24,10 @@ const commentSchema = new Schema<IComment>({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    parentId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Comment'
+    },
     status: {
         type: String,
         default: ECommentStatus.PENDING,
@@ -32,7 +37,7 @@ const commentSchema = new Schema<IComment>({
         type: Date,
         default: Date.now,
     },
-})
+}, { collection: 'comments' })
 
 const Comment = models.Comment || model('Comment', commentSchema)
 

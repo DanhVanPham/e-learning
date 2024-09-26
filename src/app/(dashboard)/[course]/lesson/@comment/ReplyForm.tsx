@@ -1,4 +1,5 @@
 "use client";
+import { IconSend } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -7,6 +8,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createComment } from "@/lib/actions/comment.actions";
 import { TCreateCommentParams } from "@/types";
@@ -20,10 +22,12 @@ const formSchema = z.object({
   content: z.string().min(1, "Nội dung phải được nhập"),
 });
 
-const CommentForm = ({
+const ReplyForm = ({
+  parentId,
   userId,
   lessonId,
 }: {
+  parentId: string;
   userId: string;
   lessonId: string;
 }) => {
@@ -39,15 +43,16 @@ const CommentForm = ({
     startTransition(async () => {
       try {
         const params: TCreateCommentParams = {
+          parentId: parentId,
           content: values.content,
           lesson: lessonId,
           user: userId,
         };
         await createComment(params);
-        toast.success("Tạo bình luận thành công");
+        toast.success("Phản hồi bình luận thành công");
       } catch (error) {
         console.log(error);
-        toast.error("Tạo bình luận thất bại!");
+        toast.error("Phản hồi bình luận thất bại!");
       } finally {
         form.reset();
       }
@@ -57,36 +62,35 @@ const CommentForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-        <div className="flex flex-col gap-5 mt-10">
+        <div className="mt-2 mx-2 relative">
           <FormField
             control={form.control}
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormControl>
-                  <Textarea
-                    placeholder="Nhập bình luận của bạn"
-                    className="min-h-[150px]"
-                    {...field}
-                  />
+                <FormControl className="relative">
+                  <div>
+                    <Textarea
+                      placeholder="Nhập trả lời của bạn"
+                      className="min-h-[50px] pr-8"
+                      {...field}
+                    />
+                    <button
+                      className="absolute right-1 top-[50%] translate-y-[-50%] ml-auto"
+                      disabled={isPending}
+                    >
+                      <IconSend className="size-5 text-primary" />
+                    </button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-[140px] ml-auto"
-            isLoading={isPending}
-          >
-            Đăng bình luận
-          </Button>
         </div>
       </form>
     </Form>
   );
 };
 
-export default CommentForm;
+export default ReplyForm;

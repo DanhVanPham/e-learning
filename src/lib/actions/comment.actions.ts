@@ -6,7 +6,7 @@ import { TCommentItemManage, TCreateCommentParams, TGetAllCommentParams, TGetCom
 import { parseMongoDocToPlainObject } from "@/utils/helpers";
 import { ECommentStatus } from "@/types/enums";
 import User from "@/database/user.model";
-import { FilterQuery } from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 import Lesson from "@/database/lesson.model";
 import Course from "@/database/course.model";
 import { revalidatePath } from "next/cache";
@@ -24,16 +24,60 @@ export async function createComment(params: TCreateCommentParams): Promise<IComm
 export async function getCommentsByLesson(lessonId: string): Promise<TGetCommentItem[] | undefined> {
     try {
         connectToDatabase()
+        const comments = await Comment.aggregate([
+            {
+                $match: {
+                    lesson: new mongoose.Types.ObjectId(lessonId),
+                    status: ECommentStatus.APPROVED,
+                    parentId: undefined
+                }
+            },
+            {
+                $lookup: {
+                    from: 'comments',
+                    localField: '_id',
+                    foreignField: 'parentId',
+                    as: 'replies'
+                }
+            },
+            {
+                $addFields: {
+                    replyCount: { $size: "$replies" } // Count the replies
+                }
+            },
+            {
+                $sort: { created_at: -1 }
+            },
+            {
+                $project: {
+                    replies: 0 // Exclude the replies array if not needed
+                }
+            }
+        ]);
+        
+        await Comment.populate(comments, {
+            path: "user",
+            model: User,
+            select: "_id username name avatar",
+        });
+        return parseMongoDocToPlainObject(comments);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function getRepliesOfComment(parentId: string): Promise<TGetCommentItem[] | undefined> {
+    try {
+        connectToDatabase()
         const comments = await Comment.find({
-            lesson: lessonId,
-            status: ECommentStatus.APPROVED
+            parentId,
+            status: ECommentStatus.APPROVED,
         }).populate({
             path: 'user',
             model: User,
-            select: "_id username name avatar",
-        }).sort({
-            created_at: -1
-        });
+            select: '_id username avatar name'
+        })
+
         return parseMongoDocToPlainObject(comments);
     } catch (error) {
         console.log(error)
