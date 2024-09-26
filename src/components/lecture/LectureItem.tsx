@@ -10,12 +10,19 @@ import LessonItem from "../lesson/LessonItem";
 function LectureItem({
   data,
   children,
+  defaultOpen,
 }: {
   data: ICourseUpdateLecture;
   children: React.ReactNode;
+  defaultOpen?: boolean;
 }) {
   return (
-    <Accordion type="single" collapsible className="w-full">
+    <Accordion
+      type="single"
+      defaultValue={defaultOpen ? data._id.toString() : ""}
+      collapsible
+      className="w-full"
+    >
       <AccordionItem value={data._id.toString()}>
         <AccordionTrigger>
           <div className="flex items-center gap-3 w-full justify-start pr-5">
