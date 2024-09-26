@@ -176,3 +176,12 @@ body .swal2-container {
     }
   }
 }
+
+.invisible-upload-btn {
+  label {
+    @apply w-[100px] h-[50px] bg-transparent text-gray-500  rounded-full text-sm focus-within:ring-0 focus-within:ring-offset-0
+  }
+  div {
+    display: none;
+  }
+}

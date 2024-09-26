@@ -8,6 +8,7 @@ import {
   IconStudy,
   IconCurrency,
   IconStar,
+  IconUser,
 } from "@/components/icons";
 import type { TMenuItem, TRatingIcon } from "@/types";
 import {
@@ -68,6 +69,12 @@ export const menuItems: TMenuItem[] = [
     url: "/manage/comment",
     icon: <IconComment className="size-5" />,
     role: [EUserRole.ADMIN],
+  },
+  {
+    title: "Profile",
+    url: "/profile",
+    icon: <IconUser className="size-5" />,
+    role: [EUserRole.ADMIN, EUserRole.EXPERT, EUserRole.USER],
   },
 ];
 
