@@ -82,8 +82,8 @@ const CourseItem = ({
                 <span>{item.title}</span>
               </div>
             ))}
-            <span className="font-bold text-primary text-base ml-auto">
-              {formatVndPrice(Number(data?.price))}
+            <span className="font-bold text-secondary text-base ml-auto">
+              {data?.price ? formatVndPrice(Number(data.price)) : "Miễn phí"}
             </span>
           </div>
           <Link href={linkNavigate} className={commonClassName.btnPrimary}>
