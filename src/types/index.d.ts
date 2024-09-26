@@ -223,6 +223,7 @@ export type TUpdateRatingParams = {
 
 // Comment
 export type TCreateCommentParams = {
+  parentId?: string
   content: string
   lesson: string
   user: string
@@ -234,7 +235,8 @@ export type TGetCommentItem = Omit<IComment, 'user'> & {
     name: string,
     username: string,
     avatar: string
-  }
+  },
+  replyCount?: number
 }
 
 export type TCommentItemManage = Omit<IComment, 'user', 'lesson'> & {
