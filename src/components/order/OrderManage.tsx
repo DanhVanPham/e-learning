@@ -90,7 +90,7 @@ function OrderManage({
             />
           </div>
           <Select
-            defaultValue={status || allValue}
+            value={status || allValue}
             onValueChange={(value) =>
               onChangeFilterStatus<EOrderStatus | string>(value)
             }

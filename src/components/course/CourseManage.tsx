@@ -133,7 +133,7 @@ function CourseManage({
             />
           </div>
           <Select
-            defaultValue={status || allValue}
+            value={status || allValue}
             onValueChange={(value) =>
               onChangeFilterStatus<ECourseStatus | string>(value)
             }

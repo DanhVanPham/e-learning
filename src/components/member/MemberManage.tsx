@@ -100,7 +100,7 @@ function MemberManage({
             />
           </div>
           <Select
-            defaultValue={role || allValue}
+            value={role || allValue}
             onValueChange={(value) =>
               onChangeFilterRole<EUserRole | string>(value)
             }
@@ -120,7 +120,7 @@ function MemberManage({
             </SelectContent>
           </Select>
           <Select
-            defaultValue={status || allValue}
+            value={status || allValue}
             onValueChange={(value) =>
               onChangeFilterStatus<ECommentStatus | string>(value)
             }
