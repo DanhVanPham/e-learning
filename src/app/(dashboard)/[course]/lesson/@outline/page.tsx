@@ -38,7 +38,7 @@ const page = async ({
       : 0;
 
   return (
-    <div className="sticky top-5 right-0 max-h-[calc(100svh-100px)] overflow-y-auto">
+    <div className="xl:sticky top-5 right-0 max-h-[calc(100svh-100px)] overflow-y-auto">
       <div className="hidden lg:flex items-center gap-3 mb-5">
         <div className="p-0.5 w-full rounded-full bgDarkMode border borderDarkMode flex items-center">
           <div
@@ -54,21 +54,30 @@ const page = async ({
       </div>
       <div className="flex flex-col gap-5">
         {!!lectures.length &&
-          lectures.map((lecture) => (
-            <LectureItem key={lecture._id.toString()} data={lecture}>
-              <div className="flex flex-col gap-3 mt-5">
-                {lecture.lessons.map((lesson) => (
-                  <LessonItem
-                    key={lesson._id.toString()}
-                    data={lesson}
-                    currentLesson={slug}
-                    url={`/${findCourse.slug}/lesson?slug=${lesson.slug}`}
-                    isChecked={!!normalizedHistories?.[lesson._id.toString()]}
-                  />
-                ))}
-              </div>
-            </LectureItem>
-          ))}
+          lectures.map((lecture) => {
+            const isIncludeCurrLesson = lecture.lessons.some(
+              (lesson) => lesson.slug === slug
+            );
+            return (
+              <LectureItem
+                key={lecture._id.toString()}
+                data={lecture}
+                defaultOpen={isIncludeCurrLesson}
+              >
+                <div className="flex flex-col gap-3 mt-5">
+                  {lecture.lessons.map((lesson) => (
+                    <LessonItem
+                      key={lesson._id.toString()}
+                      data={lesson}
+                      currentLesson={slug}
+                      url={`/${findCourse.slug}/lesson?slug=${lesson.slug}`}
+                      isChecked={!!normalizedHistories?.[lesson._id.toString()]}
+                    />
+                  ))}
+                </div>
+              </LectureItem>
+            );
+          })}
       </div>
     </div>
   );
